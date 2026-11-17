@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="config-licencias.js?v=1"></script>
+<script src="licencia-pos.js?v=3"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="estilos.css?v=89">
+<title>Administración de tienda</title>
+<script src="acceso-panel-moderno.js?v=57"></script>
+</head>
+<body class="pos-pro-admin" onload="verificarAccesoAdmin(); cargarAdmin()">
+<nav class="pos-admin-sidebar" aria-label="Navegación principal">
+  <div class="pos-admin-sidebar-brand"><span class="pos-admin-brand-icon">🏪</span><span><strong>POS</strong><small>Administración</small></span></div>
+  <div class="pos-admin-side-links">
+    <button type="button" data-admin-destino="menuAdmin" onclick="volverMenuAdmin()">⌂ <span>Resumen</span></button>
+    <button type="button" data-admin-destino="panelProductos" onclick="mostrarApartadoAdmin('panelProductos')">📦<span>Productos</span></button>
+    <button type="button" data-admin-destino="panelStock" onclick="mostrarApartadoAdmin('panelStock')">📋 <span>Inventario</span></button>
+    <button type="button" data-admin-destino="panelTienda" onclick="mostrarApartadoAdmin('panelTienda')">🎨 <span>Diseño y tienda</span></button>
+    <button type="button" data-admin-destino="panelRespaldo" onclick="mostrarApartadoAdmin('panelRespaldo')">💾<span>Respaldo</span></button>
+  </div>
+  <a class="pos-admin-sidebar-inicio" href="inicio.html">← Volver a la tienda</a>
+</nav>
+<header class="pos-admin-header"><div class="pos-admin-header-inner"><div><small class="pos-admin-header-eyebrow">CENTRO DE CONTROL</small><h1>Administración</h1><p>Gestiona tu tienda desde un solo lugar</p></div><a class="pos-admin-regresar" href="inicio.html">⌂ <span>Ir a la tienda</span></a></div></header>
+<div class="contenedor admin-contenedor">
+  <section id="menuAdmin" class="admin-menu-principal">
+   
+  
+    <p class="admin-descripcion">Consulta tus resultados y accede a las herramientas de tu negocio.</p>
+    <div class="pos-pro-dashboard" id="resumenProfesional" aria-live="polite">
+  <div class="pos-pro-dashboard-cabeza"><div><span class="pos-pro-sobretitulo">RESUMEN DE OPERACIONES</span><h3>Tu tienda hoy</h3></div><button type="button" id="actualizarDashboardPro">↻ Actualizar</button></div>
+  <div class="pos-pro-kpis"><article><span>Ventas de hoy</span><strong id="proVentasHoy">—</strong></article><article><span>Ingresos del día</span><strong id="proIngresosHoy">—</strong></article><article><span>Productos con stock bajo</span><strong id="proStockBajo">—</strong></article><article><span>Valor de inventario*</span><strong id="proValorStock">—</strong></article></div>
+  <div class="pos-pro-dashboard-pie"><div id="proMiniBarras" class="pos-pro-mini-barras"></div><small>*Valor estimado a precio de venta, no costo de adquisición. Las ventas se obtienen del historial guardado.</small></div>
+</div>
+<div class="admin-menu-opciones">
+      <button type="button" class="admin-menu-opcion" onclick="mostrarApartadoAdmin('panelProductos')">
+        <span class="admin-menu-icono">🛍️</span>
+        <span class="admin-menu-titulo">PRODUCTOS</span>
+        <span class="admin-menu-detalle">Crear, editar, buscar y eliminar productos</span>
+        <span class="admin-menu-flecha">Abrir <span aria-hidden="true">↗</span></span>
+      </button>
+      <button type="button" class="admin-menu-opcion" onclick="mostrarApartadoAdmin('panelStock')">
+        <span class="admin-menu-icono">📦</span>
+        <span class="admin-menu-titulo">INVENTARIO / STOCK</span>
+        <span class="admin-menu-detalle">Registrar existencias, reposiciones y productos con poco stock</span>
+        <span class="admin-menu-flecha">Abrir <span aria-hidden="true">↗</span></span>
+      </button>
+      <button type="button" class="admin-menu-opcion" onclick="mostrarApartadoAdmin('panelTienda')">
+        <span class="admin-menu-icono">🎨</span>
+        <span class="admin-menu-titulo">DISEÑO Y DATOS DE LA TIENDA</span>
+        <span class="admin-menu-detalle">Editar información, logotipo y colores</span>
+        <span class="admin-menu-flecha">Abrir <span aria-hidden="true">↗</span></span>
+      </button>
+      <button type="button" class="admin-menu-opcion" onclick="mostrarApartadoAdmin('panelRespaldo')"><span class="admin-menu-icono">💾</span><span class="admin-menu-titulo">COPIAS DE SEGURIDAD</span><span class="admin-menu-detalle">Exportar datos y recuperar registros faltantes sin sobrescribir los actuales</span><span class="admin-menu-flecha">Abrir ↗</span></button>
+    </div>
+  </section>
+
+  <div id="navegacionApartadoAdmin" class="admin-volver-contenedor" hidden>
+    <button type="button" class="admin-volver" onclick="volverMenuAdmin()">← Volver al menú</button>
+  </div>
+
+  <main id="panelProductos" class="admin-panel" hidden>
+    <section class="tarjeta">
+      <h2>🛍️ Crear y editar productos</h2>
+      <p class="admin-descripcion">Registra productos nuevos o modifica la información de los que ya tienes.</p>
+      <label>Imagen del producto</label>
+      <input type="file" id="productoInput" accept=".png,.jpg,.jpeg,.svg">
+      <img id="productoVista" class="preview" alt="Imagen actual del producto">
+      <label>Nombre del producto</label>
+      <input id="nombreProducto" placeholder="Ejemplo: Ramo de rosas">
+      <label>Código de barras (opcional)</label>
+      <div class="admin-codigo-fila">
+        <input id="codigoProducto" placeholder="Escanee o escriba un código">
+        <button type="button" onclick="abrirEscanerProducto()">📷 Escanear</button>
+      </div>
+      <small>Si no coloca un código, el sistema generará uno automáticamente.</small>
+      <label>Precio</label>
+      <input id="precioProducto" type="number" min="0" step="0.01" placeholder="Ejemplo: 25.00">
+      <label for="stockProducto" class="admin-stock-label">Stock inicial y unidad de venta</label>
+      <div class="stock-unidad-fila">
+        <input id="stockProducto" type="number" min="0" step="1" inputmode="numeric" placeholder="Cantidad (ej.: 20)" aria-label="Cantidad de stock inicial (opcional)">
+        <select id="unidadProducto" aria-label="Unidad de medida para vender este producto">
+          <option value="und">Unidad (und)</option>
+          <option value="doc">Docena (doc)</option>
+          <option value="ciento">Ciento</option>
+          <option value="par">Par</option>
+          <option value="caja">Caja</option>
+          <option value="paq">Paquete (paq)</option>
+          <option value="bolsa">Bolsa</option>
+          <option value="kg">Kilogramo (kg)</option>
+          <option value="g">Gramo (g)</option>
+          <option value="L">Litro (L)</option>
+          <option value="m">Metro (m)</option>
+          <option value="rollo">Rollo</option>
+          <option value="juego">Juego</option>
+        </select>
+      </div>
+      <label for="categoriaProducto">Categoría (opcional)</label>
+      <input id="categoriaProducto" maxlength="60" placeholder="Ejemplo: Bebidas, Abarrotes, Regalos">
+      <div class="codigo">Código generado: <strong id="codigoVista">Se generará automáticamente</strong></div>
+      <div class="admin-acciones-form">
+        <button type="button" id="guardarProductoBtn" onclick="crearProducto()">CREAR PRODUCTO</button>
+        <button type="button" class="admin-cancelar" id="cancelarEdicionBtn" onclick="cancelarEdicionProducto()" hidden>Cancelar edición</button>
+      </div>
+    </section>
+    <section class="tarjeta">
+      <h2>📦 Productos registrados</h2>
+      <input id="buscadorAdmin" class="buscador" placeholder="🔎 Buscar por nombre o código" onkeyup="buscarAdmin()">
+      <div id="listaProductos" class="grid"></div>
+    </section>
+  </main>
+
+  <main id="panelStock" class="admin-panel" hidden>
+    <section class="tarjeta inventario-pagina">
+      <div class="inventario-cabecera"><div><h2>📦 Inventario de productos</h2><p class="admin-descripcion">Controla las unidades disponibles y registra nuevas entradas sin modificar precios ni boletas.</p></div><span id="inventarioConexion" class="inventario-estado">Actualizando catálogo…</span></div>
+      <div id="inventarioResumen" class="inventario-resumen" aria-live="polite"></div>
+      <div class="inventario-filtros">
+        <input id="inventarioBuscar" class="buscador" placeholder="🔎 Buscar por nombre o código" oninput="renderizarInventario()" aria-label="Buscar inventario">
+        <select id="inventarioFiltro" onchange="renderizarInventario()" aria-label="Filtrar inventario"><option value="todos">Todos los productos</option><option value="bajo">Stock bajo (1-4)</option><option value="agotado">Agotados (0)</option><option value="sin">Sin stock configurado</option></select>
+      </div>
+      <div id="inventarioLista" class="inventario-lista"></div>
+      <section class="pos-pro-movimientos" aria-label="Movimientos del inventario"><div class="pos-pro-movimientos-cabecera"><h3>Últimos movimientos de stock</h3><button id="proActualizarMovimientos" type="button">↻ Actualizar</button></div><p class="pos-pro-ayuda">Incluye ventas y ajustes realizados desde esta versión. Los ajustes anteriores podrían no tener registro.</p><div id="proListaMovimientos" class="pos-pro-movimientos-lista">Consulta los movimientos registrados.</div></section>
+      <p class="inventario-ayuda">Los productos sin stock configurado siguen funcionando como antes. Al ingresar su primera cantidad, el control de existencias queda activo para ese producto.</p>
+    </section>
+  </main>
+
+  <main id="panelTienda" class="admin-panel" hidden>
+    <section class="tarjeta">
+      <h2>🏪 Datos de la tienda</h2>
+      <p class="admin-descripcion">Edita la información que se muestra en tu tienda y en los comprobantes.</p>
+      <label>Nombre de tienda</label>
+      <input id="nombreTienda" placeholder="Nombre de la tienda">
+      <label>Número de contacto</label>
+      <input id="contactoTienda" placeholder="Ejemplo: 999999999">
+      <label>Mensaje de la tienda</label>
+      <input id="mensajeTienda" placeholder="Mensaje o descripción de la tienda">
+      <label>Mensaje del comprobante</label>
+      <input id="mensajeTicket" placeholder="Gracias por tu compra">
+      <section class="pos-qr-admin">
+        <header class="qr-head"><span class="qr-head-icon">▦</span><div><small>CONFIGURACIÓN DE COBROS</small><h3>Pagos con QR</h3><p>Administra los códigos que verán tus clientes al pagar con Yape o Plin.</p></div></header>
+        <div class="pos-qr-admin-grid">
+          <article class="pos-qr-admin-item qr-yape"><header class="qr-card-head"><span class="qr-brand">Y</span><div><h4>Yape</h4><small id="qrYapeEstado">Sin configurar</small></div></header><div class="qr-preview"><img id="qrYapeVista" class="pos-qr-admin-imagen" alt="QR de Yape" hidden><div id="qrYapeVacio" class="qr-empty"><span>▦</span><b>QR no configurado</b><small>Agrega la imagen de tu QR.</small></div></div><div class="qr-actions"><label for="qrYapeInput" class="qr-upload">Subir / cambiar QR</label><input type="file" id="qrYapeInput" accept="image/png,image/jpeg,image/webp"><button type="button" id="qrYapeQuitar" class="pos-qr-quitar">Quitar</button></div></article>
+          <article class="pos-qr-admin-item qr-plin"><header class="qr-card-head"><span class="qr-brand">P</span><div><h4>Plin</h4><small id="qrPlinEstado">Sin configurar</small></div></header><div class="qr-preview"><img id="qrPlinVista" class="pos-qr-admin-imagen" alt="QR de Plin" hidden><div id="qrPlinVacio" class="qr-empty"><span>▦</span><b>QR no configurado</b><small>Agrega la imagen de tu QR.</small></div></div><div class="qr-actions"><label for="qrPlinInput" class="qr-upload">Subir / cambiar QR</label><input type="file" id="qrPlinInput" accept="image/png,image/jpeg,image/webp"><button type="button" id="qrPlinQuitar" class="pos-qr-quitar">Quitar</button></div></article>
+        </div><p class="qr-admin-note">ⓘ Admite PNG, JPG o WebP. Pulsa <b>GUARDAR CAMBIOS</b> para aplicar la configuración.</p>
+      </section>
+      <label>Contraseña del panel administrador</label>
+      <input id="claveAdmin" type="password" placeholder="Cambiar contraseña">
+      <label>Logo de la tienda</label>
+      <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg">
+      <img id="logoVista" class="preview" alt="Vista previa del logo">
+      <label>Icono de la aplicación en el celular (PWA)</label>
+      <input type="file" id="logoPWAInput" accept=".png,.jpg,.jpeg">
+      <img id="logoPWAVista" class="preview" alt="Vista previa del icono de la aplicación">
+      <small>Para el icono del celular se recomienda una imagen cuadrada de 512 × 512 px.</small>
+    </section>
+    <section class="tarjeta">
+      <h2>🎨 Colores de la tienda</h2>
+      <div class="pos-pro-temas" aria-label="Temas prediseñados"><strong>Temas rápidos</strong><div class="pos-pro-temas-opciones"><button type="button" data-tema-pro="claro">◯ Claro</button><button type="button" data-tema-pro="elegante">◉ Elegante</button><button type="button" data-tema-pro="noche">◐ Noche</button><button type="button" data-tema-pro="original">↶ Original</button></div><small>Prueba un tema y pulsa GUARDAR CAMBIOS para conservarlo.</small></div>
+      <p class="admin-descripcion">Cambia los colores y revisa la vista previa antes de guardar.</p>
+      <div class="panel-colores">
+        <div class="opcion-color"><label for="colorFondo">Color 1: fondo de la tienda</label><input type="color" id="colorFondo" value="#fff7fb" oninput="previsualizarColores()"></div>
+        <div class="opcion-color"><label for="colorPrincipal">Color 2: textos principales</label><input type="color" id="colorPrincipal" value="#d96c9d" oninput="previsualizarColores()"></div>
+        <div class="opcion-color"><label for="colorProducto">Color 3: fondos de recuadros</label><input type="color" id="colorProducto" value="#ffffff" oninput="previsualizarColores()"></div>
+        <div class="opcion-color"><label for="colorDatos">Color 4: códigos, precios y textos pequeños</label><input type="color" id="colorDatos" value="#4d3040" oninput="previsualizarColores()"></div>
+        <div class="opcion-color"><label for="colorContorno">Color 5: contorno de tarjetas de productos</label><input type="color" id="colorContorno" value="#d8c2ce" oninput="previsualizarColores()"></div>
+        <div class="opcion-color"><label for="colorBordes">Color 6: bordes de paneles y formularios</label><input type="color" id="colorBordes" value="#e7d8e1" oninput="previsualizarColores()"></div>
+        <div class="opcion-color"><label for="colorSuave">Color 7: fondos secundarios y elementos destacados</label><input type="color" id="colorSuave" value="#f8eef4" oninput="previsualizarColores()"></div>
+        <div class="opcion-color"><label for="colorNombreProducto">Color 8: nombre del producto en las tarjetas</label><input type="color" id="colorNombreProducto" value="#303646" oninput="previsualizarColores()"></div>
+      </div>
+      <div id="vistaPreviaColores" class="admin-vista-colores">
+        <strong>Vista previa de tu tienda</strong>
+        <div class="admin-vista-producto"><span class="vista-nombre-producto">Producto de ejemplo</span><small>Código: DM-0001</small><b>S/. 25.00</b></div>
+        <div class="pos-v27-vista-secundaria"><span>Resumen · Color 7</span><small>Contorno · Color 6</small></div>
+        <button type="button" tabindex="-1">Botón de ejemplo</button>
+        <small>Contorno normal: color 5 · Stock bajo: amarillo · Agotado: rojo</small>
+      </div>
+      <p id="estadoColores" class="admin-estado" aria-live="polite"></p>
+      <div class="admin-acciones-form">
+        <button type="button" onclick="guardarTienda()">GUARDAR CAMBIOS</button>
+        <button type="button" class="admin-cancelar" onclick="restaurarColores()">Restaurar colores</button>
+      </div>
+    </section>
+  </main>
+  <main id="panelRespaldo" class="admin-panel" hidden>
+    <section class="tarjeta pos-v25-respaldo">
+      <h2>💾 Copias de seguridad</h2>
+      <p class="admin-descripcion">Descarga un archivo JSON privado con productos, ventas y movimientos del almacenamiento local. Contiene datos de clientes; guárdalo en un lugar seguro.</p>
+      <button type="button" id="posExportarRespaldo" class="pos-v25-accion">↓ Descargar respaldo completo</button>
+    </section>
+    <section class="tarjeta pos-v25-respaldo">
+      <h2>🔄 Recuperación controlada</h2>
+      <p class="admin-descripcion">Selecciona un respaldo generado por este POS. La recuperación solo crea productos y ventas que no existan. No modifica productos o ventas existentes, ni vuelve a descontar stock. Los movimientos se guardan en el archivo para auditoría, pero no se reimportan.</p>
+      <label for="posArchivoRespaldo">Archivo de respaldo (.json)</label>
+      <input type="file" accept=".json,application/json" id="posArchivoRespaldo">
+      <button type="button" id="posRestaurarRespaldo" class="pos-v25-accion" disabled>Recuperar registros faltantes</button>
+      <p id="posRespaldoEstado" role="status" aria-live="polite">No hay un archivo seleccionado.</p>
+    </section>
+  </main>
+</div>
+<script>
+function marcarNavegacionAdmin(id) {
+  document.querySelectorAll("[data-admin-destino]").forEach(b => {
+    const activo = b.dataset.adminDestino === id;
+    b.classList.toggle("activo", activo);
+    if(activo) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+  });
+}
+marcarNavegacionAdmin("menuAdmin");
+function mostrarApartadoAdmin(id) {
+  marcarNavegacionAdmin(id);
+  document.getElementById('menuAdmin').hidden = true;
+  document.getElementById('navegacionApartadoAdmin').hidden = false;
+  document.querySelectorAll('.admin-panel').forEach(panel => {
+    panel.hidden = panel.id !== id;
+  });
+  // Al abrir Inventario se muestra el catálogo sin solicitar un código.
+  if(id === 'panelStock') {
+    if(typeof window.renderizarInventario === 'function') window.renderizarInventario();
+    if(typeof cargarProductosDesdeFirebase === 'function') {
+      cargarProductosDesdeFirebase().then(ok => {
+        if(ok && typeof window.renderizarInventario === 'function') window.renderizarInventario();
+      });
+    }
+  }
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+function volverMenuAdmin() {
+  marcarNavegacionAdmin("menuAdmin");
+  document.querySelectorAll('.admin-panel').forEach(panel => panel.hidden = true);
+  document.getElementById('navegacionApartadoAdmin').hidden = true;
+  document.getElementById('menuAdmin').hidden = false;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+function cancelarEdicionProducto() {
+  if (typeof productoEditando !== 'undefined') productoEditando = null;
+  ['nombreProducto','codigoProducto','precioProducto','stockProducto','unidadProducto','categoriaProducto'].forEach(id => { const campo=document.getElementById(id); if(campo) campo.value=''; });
+  const unidad=document.getElementById('unidadProducto');if(unidad)unidad.value='und';
+  const stock=document.getElementById('stockProducto');if(stock)delete stock.dataset.stockOriginal;
+  const img=document.getElementById('productoVista'); if(img) img.removeAttribute('src');
+  if (typeof imagenProducto !== 'undefined') imagenProducto='';
+  const btn=document.getElementById('guardarProductoBtn'); if(btn){btn.textContent='CREAR PRODUCTO';btn.setAttribute('onclick','crearProducto()');}
+  const cancelar=document.getElementById('cancelarEdicionBtn'); if(cancelar) cancelar.hidden=true;
+}
+</script>
+<script src="firebase-cloud.js?v=local2"></script>
+<script src="seguridad-pos-v25.js?v=69"></script>
+<script src="tema.js?v=67"></script>
+<script src="stock-alertas.js?v=88"></script>
+<script src="app.js?v=92"></script>
+<script src="inventario.js?v=56"></script>
+<script src="transparencia-productos.js?v=6"></script>
+<script src="ticket_canvas.js?v=111"></script>
+<script src="respaldo-pos-v25.js?v=56"></script>
+<script src="pos-profesional.js?v=67"></script>
+<script src="qr-pagos.js?v=2"></script>
+<nav class="pos-pro-bottom-nav" aria-label="Navegación móvil">
+  <a href="inicio.html">⌂<span>Inicio</span></a>
+  <a href="scanner.html"><span class="icono-escaner">[ ||| ]</span><span>Escáner</span></a>
+  <a href="control_pedidos.html"><span class="icono-ventas">🧾</span><span>Ventas</span></a>
+  <a class="activo" href="administracion.html" aria-current="page">⚙<span>Admin</span></a>
+</nav></body>
+</html>

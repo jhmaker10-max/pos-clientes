@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<script src="config-licencias.js?v=1"></script>
+<script src="licencia-pos.js?v=3"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="estilos.css?v=90">
+<script src="tema.js?v=67" defer></script>
+<script src="acceso-panel-moderno.js?v=57"></script>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" id="iconoTiendaApple" href="icon-tienda.png">
+</head>
+
+<body class="pos-pro-inicio" onload="cargarInicio()">
+
+<header>
+<img id="logoTienda" class="logo">
+<h1 id="titulo">🌸 Tienda Artesanal</h1>
+</header>
+
+
+
+<div class="pos-pro-nav" aria-label="Navegación de escritorio"><a class="activo" href="inicio.html">⌂ Inicio</a><a href="scanner.html">[ ||| ] Escáner</a><a href="control_pedidos.html">🛍️ Ventas</a><a href="administracion.html">⚙ Administración</a></div>
+<div class="pos-pro-catalogo-cabecera"><div><span class="pos-pro-sobretitulo">CATÁLOGO</span><h2>Productos disponibles</h2></div><span class="pos-pro-etiqueta">Punto de venta</span></div>
+<div class="pos-pro-buscadores"><select id="categoriaInicioPro" aria-label="Filtrar por categoría" onchange="buscarInicio()"><option value="todas">Todas las categorías</option></select>
+<input id="buscadorInicio" class="buscador" placeholder="🔎 Buscar por nombre o código" onkeyup="buscarInicio()"></div>
+
+<div id="productosInicio" class="grid"></div>
+
+<button id="botonCarrito" class="boton-carrito-flotante" type="button" aria-label="Abrir carrito" aria-controls="panelCarrito" aria-expanded="false">🛒 <span id="cantidadCarrito" class="carrito-contador">0</span></button>
+<aside id="panelCarrito" class="panel-carrito" aria-label="Carrito de compras" hidden>
+ <div class="carrito-titulo"><h2>🛒 Mi carrito</h2><button type="button" id="cerrarCarrito" aria-label="Cerrar carrito">✕</button></div>
+ <div id="listaCarrito" class="lista-carrito"></div>
+ <div class="carrito-pie"><div class="carrito-total"><strong>Total a pagar</strong><strong id="totalCarrito">S/ 0.00</strong></div><div class="carrito-acciones"><button type="button" id="irPagarCarrito">💰 IR A PAGAR</button><button type="button" id="irEscanerCarrito">[ ||| ] IR AL ESCÁNER</button></div></div>
+</aside>
+
+<script src="offline-catalog.js"></script>
+<script src="firebase-cloud.js?v=local2"></script>
+<script src="seguridad-pos-v25.js?v=69"></script>
+<script src="stock-alertas.js?v=88"></script>
+<script src="app.js?v=88"></script>
+<script src="carrito.js?v=50"></script>
+
+<nav class="pos-pro-bottom-nav" aria-label="Navegación móvil">
+  <a class="activo" href="inicio.html" aria-current="page">⌂<span>Inicio</span></a>
+  <a href="scanner.html"><span class="icono-escaner">[ ||| ]</span><span>Escáner</span></a>
+  <a href="control_pedidos.html"><span class="icono-ventas">🧾</span><span>Ventas</span></a>
+  <a href="administracion.html">⚙<span>Admin</span></a>
+</nav>
+<script src="ticket_canvas.js?v=112"></script>
+<script src="pos-profesional.js?v=67"></script><script>
+if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>

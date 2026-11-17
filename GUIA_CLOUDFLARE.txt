@@ -1,0 +1,14 @@
+DESPLIEGUE EN CLOUDFLARE PAGES (POS DE CLIENTES)
+
+1. En cloudflare.com crear Workers & Pages > Create > Pages > Direct Upload.
+2. Publica inicialmente este POS en un proyecto de pruebas.
+3. Anota la direccion HTTPS (p. ej. https://mi-pos.pages.dev).
+4. En Render configura POS_ALLOWED_ORIGINS con ESA URL EXACTA, sin / final.
+5. Abre config-licencias.js del POS y sustituye http://localhost:8787
+   por la URL publica HTTPS del servidor de Render.
+6. Vuelve a publicar el ZIP/carpeta POS_CLIENTES con el config actualizado.
+7. Verifica licencia nueva, suspension y renovacion desde otro dispositivo.
+
+No subas PANEL_PROPIETARIO ni datos-licencias.json a Cloudflare.
+Este frontend puede alterarse por quien recibe los archivos. Los datos del
+POS se almacenan localmente: haz copias y prueba multiples navegadores.

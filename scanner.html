@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="es">
+<head>
+<script src="config-licencias.js?v=1"></script>
+<script src="licencia-pos.js?v=3"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escáner de productos</title>
+<link rel="stylesheet" href="estilos.css?v=76">
+<script src="tema.js?v=67" defer></script>
+<script src="https://unpkg.com/quagga/dist/quagga.min.js" defer></script>
+<script src="firebase-cloud.js?v=local2"></script>
+<script src="seguridad-pos-v25.js?v=69" defer></script>
+<script src="stock-alertas.js?v=88" defer></script>
+<script src="app.js?v=50" defer></script>
+<script src="scanner-multiple.js?v=105" defer></script>
+<style>
+.escaneo-contenido{width:100%;max-width:800px;margin:0 auto;padding:12px}
+.escaneo-contenido .tarjeta{width:100%;max-width:none;margin:12px 0;background:var(--producto-fondo)}
+#scanner{position:relative;height:270px;overflow:hidden;border-radius:16px;background:#202020}
+#scanner video,#scanner canvas{width:100%!important;height:100%!important;object-fit:cover!important}
+.mira{position:absolute;inset:23% 9%;border:3px solid #46ee88;border-radius:10px;pointer-events:none;box-shadow:0 0 13px #1ce27b;z-index:2}
+#pagarEscaneo{width:100%;margin-top:14px;min-height:56px;font-weight:800;font-size:17px;border-radius:14px}
+#pagarEscaneo:disabled{opacity:.5;cursor:not-allowed}
+.escaneo-ayuda{font-size:13px;color:var(--producto-datos-color)}
+.escaneo-fila{display:flex;align-items:center;gap:9px}
+.escaneo-fila input{flex:1;min-width:0}
+.escaneo-fila button{flex-shrink:0;padding:12px}
+#listaEscaneados{list-style:none;padding:0;margin:0}
+#listaEscaneados li{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid currentColor}
+#listaEscaneados li > div:not(.miniatura-escaneo){flex:1;text-align:left;min-width:0}
+.miniatura-escaneo{width:74px;height:74px;flex:0 0 74px;display:flex;align-items:center;justify-content:center;border-radius:12px;overflow:hidden;background:var(--producto-fondo,#fff);border:1px solid #9995}
+.miniatura-escaneo img{display:block;width:100%;height:100%;object-fit:contain}
+.miniatura-escaneo.sin-imagen{font-size:28px}
+@media(max-width:420px){.miniatura-escaneo{width:60px;height:60px;flex-basis:60px}#listaEscaneados li{gap:7px}.cantidad-controles{gap:4px}}
+#listaEscaneados small{display:block;color:var(--producto-datos-color);overflow-wrap:anywhere}
+.cantidad-controles{display:flex;align-items:center;gap:7px}
+.cantidad-controles button{padding:6px 10px;min-width:34px}
+.escaneo-pie{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+#resultado{overflow-wrap:anywhere;min-height:38px}
+/* Campo manual: contraste garantizado, incluso con colores personalizados. */
+#formularioManual #codigoManual{
+  background-color:#ffffff !important;
+  color:#171717 !important;
+  -webkit-text-fill-color:#171717 !important;
+  caret-color:#171717 !important;
+  border:2px solid #666 !important;
+  font-size:18px;
+  font-weight:600;
+  opacity:1;
+  color-scheme:light;
+}
+/* Código manual: ancho completo de la tarjeta. El botón no reduce el campo. */
+#formularioManual{
+  display:flex;flex-direction:column;align-items:stretch;
+  gap:8px;width:100%;max-width:none;margin-top:10px;
+}
+#formularioManual #codigoManual{
+  display:block;box-sizing:border-box;flex:none;
+  width:100% !important;max-width:none !important;min-width:0;
+  height:54px;min-height:54px;padding:12px 16px;
+  font-size:20px !important;line-height:1.3;
+  border-radius:12px;letter-spacing:.3px;
+}
+#formularioManual #agregarManual{
+  display:block;width:100%;max-width:none;
+  min-height:52px;padding:12px 18px;
+  font-size:17px;border-radius:12px;margin-top:0;
+}
+@media(max-width:600px){
+  .escaneo-contenido{padding:8px;}
+  #formularioManual #codigoManual{height:54px;min-height:54px;}
+}
+#formularioManual #codigoManual::placeholder{
+  color:#666666 !important;
+  -webkit-text-fill-color:#666666 !important;
+  opacity:1;
+}
+#formularioManual #codigoManual:focus{
+  outline:3px solid #2563eb;
+  outline-offset:1px;
+}
+
+/* Interfaz profesional POS para el escáner */
+body:has(.escaneo-contenido) {
+  background: var(--fondo);
+}
+body:has(.escaneo-contenido) header {
+  padding: 18px 22px;
+  box-shadow: 0 4px 16px rgba(25, 20, 24, .08);
+}
+body:has(.escaneo-contenido) header h1 {
+  margin: 0;
+  font-size: clamp(19px, 2.4vw, 25px);
+  font-weight: 800;
+  letter-spacing: -.4px;
+}
+.escaneo-contenido {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr);
+  gap: 14px 18px;
+  width: min(100% - 32px, 1280px);
+  max-width: 1280px;
+  margin: 22px auto 40px;
+  padding: 0;
+  align-items: start;
+}
+.escaneo-contenido > #estado {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--rosa) 20%, transparent);
+  border-left: 4px solid var(--rosa);
+  border-radius: 12px;
+  background: var(--producto-fondo);
+  color: var(--producto-datos-color);
+  box-shadow: 0 3px 12px rgba(30, 20, 26, .04);
+  font-size: 13px;
+}
+.escaneo-contenido > #scanner {
+  grid-column: 1;
+  grid-row: 2;
+  height: clamp(270px, 34vw, 420px);
+  border: 1px solid #222;
+  border-radius: 16px;
+  background: #111827;
+  box-shadow: 0 8px 24px rgba(0,0,0,.13);
+}
+#scanner .mira {
+  inset: 25% 8%;
+  border: 2px solid #36e58a;
+  border-radius: 12px;
+  box-shadow: 0 0 0 999px rgba(0,0,0,.12), 0 0 18px rgba(54,229,138,.28);
+}
+.escaneo-contenido > .escaneo-ayuda {
+  grid-column: 1;
+  grid-row: 3;
+  margin: 0;
+  padding: 0 2px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.escaneo-contenido > #resultado {
+  grid-column: 1;
+  grid-row: 4;
+  min-height: 44px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--rosa) 17%, transparent);
+  border-radius: 11px;
+  background: var(--producto-fondo);
+  color: var(--producto-datos-color);
+  font-size: 13px;
+}
+.escaneo-contenido > section.tarjeta:not(#seccionLista) {
+  grid-column: 1;
+  grid-row: 5;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--rosa) 16%, transparent);
+  border-radius: 14px;
+  background: var(--producto-fondo);
+  box-shadow: 0 5px 18px rgba(30,20,26,.05);
+  box-sizing: border-box;
+}
+#formularioManual {
+  gap: 9px;
+}
+#formularioManual #codigoManual {
+  height: 48px;
+  min-height: 48px;
+  border: 1px solid #c8c2c8 !important;
+  border-radius: 9px;
+  background: #fff !important;
+  font-size: 16px !important;
+}
+#formularioManual #agregarManual {
+  min-height: 46px;
+  border-radius: 9px;
+  background: var(--rosa);
+  color: var(--texto-sobre-principal, #fff);
+  font-size: 13px;
+}
+.escaneo-contenido > #seccionLista {
+  grid-column: 2;
+  grid-row: 2 / span 4;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--rosa) 16%, transparent);
+  border-radius: 16px;
+  background: var(--producto-fondo);
+  box-shadow: 0 6px 22px rgba(30,20,26,.06);
+  box-sizing: border-box;
+}
+#seccionLista h2 {
+  margin: 0 0 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--rosa) 16%, transparent);
+  font-size: 17px;
+}
+#seccionLista #totalUnidades {
+  margin: 10px 0;
+  font-size: 12px;
+}
+#listaEscaneados {
+  max-height: 460px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+#listaEscaneados li {
+  padding: 12px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--rosa) 15%, transparent);
+}
+#listaEscaneados li > div:not(.miniatura-escaneo) {
+  font-size: 13px;
+}
+#listaEscaneados small {
+  font-size: 11px;
+}
+.miniatura-escaneo {
+  width: 62px;
+  height: 62px;
+  flex-basis: 62px;
+  border: 1px solid color-mix(in srgb, var(--rosa) 15%, transparent);
+  background: var(--fondo);
+}
+.cantidad-controles button {
+  width: auto;
+  min-width: 32px;
+  min-height: 32px;
+  margin: 0;
+  padding: 5px 8px;
+  border-radius: 8px;
+}
+.escaneo-pie {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--rosa) 16%, transparent);
+}
+#totalEscaneo {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--producto-datos-color);
+}
+#vaciarEscaneo {
+  width: auto;
+  min-height: 38px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: var(--fondo);
+  border: 1px solid color-mix(in srgb, var(--rosa) 24%, transparent);
+  color: var(--producto-datos-color);
+  font-size: 12px;
+}
+#pagarEscaneo {
+  min-height: 50px;
+  margin-top: 14px;
+  border-radius: 10px;
+  background: var(--rosa);
+  color: var(--texto-sobre-principal, #fff);
+  font-size: 14px;
+}
+.escaneo-contenido > button[onclick*="inicio.html"] {
+  grid-column: 1 / -1;
+  width: auto;
+  justify-self: start;
+  min-height: 42px;
+  margin: 2px 0 0;
+  padding: 9px 16px;
+  border: 1px solid color-mix(in srgb, var(--rosa) 25%, transparent);
+  border-radius: 10px;
+  background: var(--producto-fondo);
+  color: var(--producto-datos-color);
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  .escaneo-contenido {
+    grid-template-columns: minmax(0, 1fr);
+    width: calc(100% - 16px);
+    gap: 8px;
+    margin: 8px auto 20px;
+  }
+  .escaneo-contenido > #estado,
+  .escaneo-contenido > #scanner,
+  .escaneo-contenido > .escaneo-ayuda,
+  .escaneo-contenido > #resultado,
+  .escaneo-contenido > section.tarjeta:not(#seccionLista),
+  .escaneo-contenido > #seccionLista,
+  .escaneo-contenido > button[onclick*="inicio.html"] {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .escaneo-contenido > #estado,
+  .escaneo-contenido > #resultado {
+    padding: 10px 12px;
+    min-height: 0;
+    font-size: 12px;
+  }
+  .escaneo-contenido > #scanner {
+    height: clamp(185px, 56vw, 245px);
+    border-radius: 14px;
+  }
+  #scanner .mira {
+    inset: 24% 9%;
+    border-radius: 11px;
+  }
+  .escaneo-contenido > .escaneo-ayuda {
+    font-size: 11px;
+  }
+  .escaneo-contenido > section.tarjeta:not(#seccionLista),
+  .escaneo-contenido > #seccionLista {
+    padding: 13px;
+    border-radius: 12px;
+  }
+  #formularioManual #codigoManual {
+    height: 42px;
+    min-height: 42px;
+    font-size: 14px !important;
+  }
+  #formularioManual #agregarManual {
+    min-height: 42px;
+    font-size: 12px;
+  }
+  #listaEscaneados {
+    max-height: 285px;
+  }
+  #listaEscaneados li {
+    padding: 9px 0;
+  }
+  .miniatura-escaneo {
+    width: 54px;
+    height: 54px;
+    flex-basis: 54px;
+  }
+  #pagarEscaneo {
+    min-height: 44px;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .escaneo-contenido > button[onclick*="inicio.html"] {
+    width: 100%;
+    min-height: 38px;
+  }
+}
+@media (max-width: 380px) {
+  .escaneo-contenido {width: calc(100% - 12px); gap: 7px;}
+  #listaEscaneados li {gap: 6px;}
+  .miniatura-escaneo {width: 48px;height: 48px;flex-basis: 48px;}
+  .escaneo-fila {gap: 6px;}
+}
+</style>
+</head>
+<body class="pagina-escaner-pro pos-scan-v22">
+<nav class="scan-pro-sidebar" aria-label="Navegación principal">
+  <div class="scan-pro-brand"><span class="scan-pro-brand-icon" aria-hidden="true">🏪</span><span><strong>POS</strong><small>Punto de venta</small></span></div>
+  <span class="scan-pro-menu-label">ESPACIO DE TRABAJO</span>
+  <a href="inicio.html"><span aria-hidden="true">⌂</span> Inicio</a>
+  <a href="scanner.html" class="activo" aria-current="page"><span aria-hidden="true">[ ||| ]</span> Escáner</a>
+  <a href="control_pedidos.html"><span aria-hidden="true">🛍️</span> Ventas</a>
+  <a href="administracion.html"><span aria-hidden="true">⚙</span> Administración</a>
+  <div class="scan-pro-side-footer">Registro de productos con cámara o código manual</div>
+</nav>
+<header class="scan-pro-header"><div class="scan-pro-header-inner"><div><span class="scan-pro-eyebrow">PUNTO DE VENTA · ESCANEO</span><h1>Escáner de productos</h1><p>Agrega productos rápidamente y revisa tu carrito antes de cobrar.</p></div><a class="scan-pro-header-back" href="inicio.html">⌂ <span>Ir a la tienda</span></a></div></header>
+<main class="escaneo-contenido">
+<div id="estado" class="tarjeta" role="status" aria-live="polite">Preparando cámara...</div>
+<div id="scanner" aria-label="Vista de cámara para escanear códigos"><div class="mira"></div></div>
+<p class="escaneo-ayuda">⌖ Apunta el código al recuadro. El escaneo es automático; hay una pausa de 2 segundos después de añadir un producto. Para volver a añadirlo, debe ser detectado nuevamente por la cámara.</p>
+
+
+<section class="tarjeta scan-pro-manual">
+
+<label for="codigoManual">Ingresa el código</label>
+<form id="formularioManual" class="escaneo-fila"><input type="text" id="codigoManual" placeholder="Escribe o pega el código" autocomplete="off" inputmode="text" aria-label="Código de producto" required><button type="submit" id="agregarManual">➕ Añadir</button></form><p class="escaneo-ayuda">Puedes presionar Enter o pulsar Añadir. El producto debe estar registrado en Administración.</p>
+</section>
+<section class="tarjeta" id="seccionLista">
+<div class="scan-pro-section-head scan-pro-cart-head"><span class="scan-pro-head-icon" aria-hidden="true">🛍️</span><div><h2>Carrito de compra</h2><p>Productos agregados desde el escáner</p></div></div>
+<p id="totalUnidades" class="escaneo-ayuda">0 unidades</p>
+<ul id="listaEscaneados"><li>Todavía no hay productos.</li></ul>
+<div class="escaneo-pie"><strong id="totalEscaneo">Total: S/ 0.00</strong><button type="button" id="vaciarEscaneo">Vaciar lista</button></div>
+<button type="button" id="pagarEscaneo" disabled aria-label="Ir al panel de boletas con los productos escaneados">Cobrar y generar boleta →</button>
+</section>
+<button type="button" onclick="location.href='inicio.html'">← Volver a la tienda</button>
+</main>
+<nav class="pos-pro-bottom-nav" aria-label="Navegación móvil">
+  <a href="inicio.html">⌂<span>Inicio</span></a>
+  <a class="activo" href="scanner.html" aria-current="page"><span class="icono-escaner">[ ||| ]</span><span>Escáner</span></a>
+  <a href="control_pedidos.html"><span class="icono-ventas">🧾</span><span>Ventas</span></a>
+  <a href="administracion.html">⚙<span>Admin</span></a>
+</nav></body>
+</html>

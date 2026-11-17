@@ -1,0 +1,17 @@
+POS CLIENTES PARA GITHUB PAGES — CONECTADO A RENDER / NEON
+
+1. Crea un repositorio SEPARADO llamado pos-clientes en tu cuenta GitHub.
+2. Sube los ARCHIVOS que contiene este ZIP a la raiz del repositorio (no subas el ZIP como un solo archivo).
+3. En Settings > Pages > Build and deployment, Source: Deploy from a branch; Branch: main, Folder: /(root); Save.
+4. Una vez publicada la pagina, copia su URL publica. Ejemplo para usuario jhmaker10-max y repositorio pos-clientes:
+   https://jhmaker10-max.github.io/pos-clientes/
+5. En Render > pos-licencias > Environment, establece POS_ALLOWED_ORIGINS con SOLO EL ORIGEN (sin ruta ni barra final):
+   https://jhmaker10-max.github.io
+   Para un dominio personalizado, usa su origen HTTPS exacto. Nunca pongas una URL con /pos-clientes/ en esta variable.
+6. Guarda y despliega los cambios de variables.
+7. Abre la URL de tu POS y activa la licencia creada en tu panel publico.
+
+El archivo config-licencias.js ya apunta a https://pos-licencias.onrender.com.
+No publiques el panel del propietario ni la cadena DATABASE_URL en el repositorio del POS.
+El POS guarda ventas/productos localmente en el navegador/dispositivo y requiere respaldos.
+Render Free puede entrar en reposo tras inactividad; la verificacion de licencia del POS vence en 6 segundos, por lo que un primer acceso podria fallar mientras Render despierta. Reintenta luego de que Render este activo; evalua mejorar el tiempo de espera antes de vender.

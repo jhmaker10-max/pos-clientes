@@ -1,0 +1,14 @@
+POS PARA CLIENTES - SIN PANEL DE PROPIETARIO
+
+1. Abre config-licencias.js y cambia la URL del servidor a tu dominio HTTPS
+   (ejemplo: https://licencias.miempresa.com).
+2. Aloja esta carpeta en una web HTTPS o, para pruebas locales, ejecuta
+   INICIAR_POS_LOCAL_WINDOWS.bat con Python instalado.
+3. Para prueba local visita http://localhost:8080/inicio.html
+4. Escribe el código de licencia recibido desde el panel propietario.
+
+El administrador debe agregar el dominio del POS a POS_ALLOWED_ORIGINS.
+Los productos y ventas se guardan en el navegador del equipo. Respaldar JSON.
+Sin conexión, la última licencia válida admite hasta una hora de gracia.
+No abrir directamente con file://. No incluye Firebase.
+Esta versión requiere probar exhaustivamente ventas e inventario antes de vender.

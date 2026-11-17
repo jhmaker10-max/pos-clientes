@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<script src="config-licencias.js?v=1"></script>
+<script src="licencia-pos.js?v=3"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escanear código de producto · POS</title>
+<link rel="stylesheet" href="estilos.css?v=76">
+<script src="tema.js?v=67" defer></script>
+<script src="https://unpkg.com/quagga/dist/quagga.min.js" defer></script>
+<script src="scanner-producto.js?v=1" defer></script>
+<style>
+*{box-sizing:border-box}
+body{min-height:100dvh}
+.registro-scan{width:min(100% - 24px,800px);margin:22px auto 60px;display:grid;gap:14px}
+.registro-scan .tarjeta{width:100%;max-width:none;margin:0;padding:18px;background:var(--producto-fondo,#fff);border-radius:18px}
+.registro-cabecera{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.registro-cabecera h1{margin:4px 0 8px;font-size:clamp(22px,4vw,30px)}
+.registro-cabecera p{margin:0;line-height:1.5}
+.registro-atras{display:inline-flex;align-items:center;padding:11px 16px;border-radius:12px;border:1px solid currentColor;text-decoration:none;font-weight:600}
+#scannerProducto{position:relative;height:min(54vh,350px);min-height:245px;overflow:hidden;border-radius:16px;background:#202020;margin-top:12px}
+#scannerProducto video,#scannerProducto canvas{width:100%!important;height:100%!important;object-fit:cover!important}
+#scannerProducto .mira{position:absolute;inset:23% 9%;border:3px solid #46ee88;border-radius:10px;pointer-events:none;box-shadow:0 0 13px #1ce27b;z-index:2}
+.registro-ayuda{margin:10px 0 0;font-size:14px;line-height:1.5;opacity:.88}
+#gatilloProducto{display:block;width:100%;min-height:62px;margin-top:16px;font-size:18px;font-weight:800;border-radius:14px;cursor:pointer}
+#gatilloProducto:disabled{opacity:.65;cursor:not-allowed}
+#estadoProducto,#resultadoProducto{margin:8px 0 0;min-height:24px;overflow-wrap:anywhere}
+#resultadoProducto{font-weight:600}
+.registro-manual{display:grid;gap:9px}
+.registro-manual label{font-weight:700}
+#codigoRegistroManual{width:100%;min-height:53px;padding:12px 14px;border-radius:12px;background:#fff;color:#151515;-webkit-text-fill-color:#151515;font-size:18px;border:2px solid #777}
+#confirmarCodigoManual{min-height:52px;border-radius:12px;font-weight:700}
+@media(max-width:500px){.registro-scan{width:calc(100% - 16px);margin:10px auto 30px}.registro-scan .tarjeta{padding:13px}}
+</style>
+</head>
+<body class="pagina-escaner-pro pos-scan-v22">
+<main class="registro-scan">
+<section class="tarjeta">
+  <div class="registro-cabecera"><div><small>ADMINISTRACIÓN · PRODUCTOS</small><h1>📷 Escanear código de producto</h1><p>Registra el código de barras sin agregar productos al carrito.</p></div><a class="registro-atras" href="administracion.html" id="cancelarScanProducto">← Volver</a></div>
+  <div id="scannerProducto" aria-label="Cámara para capturar el código de barras"><div class="mira"></div></div>
+  <p class="registro-ayuda">Coloca el código dentro del recuadro y pulsa el gatillo. Solo se captura un código por pulsación.</p>
+  <button type="button" id="gatilloProducto" disabled>📷 Escanear código</button>
+  <p id="estadoProducto" role="status" aria-live="polite">Iniciando cámara…</p>
+  <p id="resultadoProducto" role="status" aria-live="polite"></p>
+</section>
+<section class="tarjeta">
+<form id="formularioRegistroManual" class="registro-manual">
+<label for="codigoRegistroManual">O escribe el código manualmente</label>
+<input id="codigoRegistroManual" type="text" placeholder="Código del producto" autocomplete="off" required>
+<button type="submit" id="confirmarCodigoManual">Usar este código</button>
+</form>
+</section>
+</main>
+</body>
+</html>

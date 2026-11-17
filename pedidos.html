@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+<script src="config-licencias.js?v=1"></script>
+<script src="licencia-pos.js?v=3"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="estilos.css?v=76">
+<script src="tema.js?v=67" defer></script>
+</head>
+
+<body class="pagina-pedidos pos-pedido-v23" onload="if(new URLSearchParams(location.search).get('desde')==='escaner'){iniciarPagoEscaneado()}else{cargarPedido()}">
+
+<nav class="pedido-pro-sidebar" aria-label="Navegación principal">
+  <div class="pedido-pro-brand"><span class="pedido-pro-brand-icon" aria-hidden="true">🏪</span><span><strong>POS</strong><small>Punto de venta</small></span></div>
+  <span class="pedido-pro-menu-label">ESPACIO DE TRABAJO</span>
+  <a href="inicio.html"><span aria-hidden="true">⌂</span> Inicio</a>
+  <a href="scanner.html"><span aria-hidden="true">[ ||| ]</span> Escáner</a>
+  <a href="control_pedidos.html"><span aria-hidden="true">🛍️</span> Ventas</a>
+  <a href="administracion.html"><span aria-hidden="true">⚙</span> Administración</a>
+  <div class="pedido-pro-side-footer">Cobro, datos del cliente y emisión de boleta</div>
+</nav>
+<header class="pedido-cabecera">
+  <div class="pedido-cabecera-interior">
+    <div class="pedido-marca"><span class="pedido-marca-icono" aria-hidden="true">🧾</span><div><span class="pedido-etiqueta">PUNTO DE VENTA · COBRO</span><h1>Generar pedido</h1><p>Confirma los productos, registra el pago y genera la boleta</p></div></div>
+    <a class="pedido-volver" href="inicio.html" aria-label="Regresar al inicio">← <span>Volver a tienda</span></a>
+  </div>
+</header>
+<div class="pedido-pro-etapas" aria-label="Proceso de cobro"><span><b>01</b> Compra</span><span><b>02</b> Cliente</span><span><b>03</b> Pago</span><span><b>04</b> Boleta</span></div>
+<main class="pedido-layout">
+  <section class="pedido-columna-detalle" aria-label="Resumen de compra">
+    <div class="card pedido-panel pedido-resumen">
+      <div class="pedido-encabezado-seccion"><span class="pedido-icono">🛍️</span><div><span class="pedido-sobretitulo">01 · TU COMPRA</span><h2 id="tituloSeleccionPedido">Producto seleccionado</h2></div></div>
+      <div id="productoPedido" class="pedido-productos"></div>
+      <div class="pedido-resumen-inferior"><div><span class="pedido-total-caption">IMPORTE TOTAL</span><small>Verifica los productos antes de imprimir</small></div><div id="totalPedido" class="pedido-total">Total: S/. 0</div></div>
+      <p id="avisoPagoEscaneado" class="pedido-nota" hidden></p>
+    </div>
+    <div class="pedido-pie-seguridad"><span aria-hidden="true">✓</span> Tu pedido se registra cuando generas la boleta.</div>
+  </section>
+  <section class="pedido-columna-formulario" aria-label="Datos e impresión">
+    <div class="card pedido-panel pedido-formulario">
+      <div class="pedido-encabezado-seccion"><span class="pedido-icono">👤</span><div><span class="pedido-sobretitulo">02 · INFORMACIÓN DEL COMPRADOR</span><h2>Datos del cliente</h2></div></div>
+      <p class="pedido-ayuda">Completa los datos que deseas incluir en la boleta.</p>
+      <div class="pedido-campos">
+        <div class="pedido-campo pedido-campo-completo"><label for="cliente">Nombre del cliente</label><input id="cliente" placeholder="Nombre completo" autocomplete="name"></div>
+        <div class="pedido-campo"><label for="dniCliente">Número de DNI</label><input id="dniCliente" type="text" inputmode="numeric" maxlength="8" pattern="[0-9]{8}" placeholder="8 dígitos" autocomplete="off" title="DNI de 8 dígitos"></div>
+        <div class="pedido-campo"><label for="telefonoCliente">Teléfono del cliente</label><input id="telefonoCliente" type="tel" inputmode="tel" maxlength="20" placeholder="999 999 999" autocomplete="tel"></div>
+        <div class="pedido-campo pedido-campo-completo"><label for="direccionCliente">Dirección del cliente</label><input id="direccionCliente" type="text" maxlength="200" placeholder="Calle, número y referencia" autocomplete="street-address"></div>
+      </div>
+    </div>
+    <div class="card pedido-panel pos-pro-pagos" id="proPanelPagos">
+      <div class="pedido-encabezado-seccion"><span class="pedido-icono">💳</span><div><span class="pedido-sobretitulo">03 · COBRO</span><h2>Método de pago</h2></div></div>
+      <div class="pos-pro-metodos" role="group" aria-label="Seleccionar método de pago"><label><input type="radio" name="metodoPagoPro" value="Efectivo" checked> Efectivo</label><label><input type="radio" name="metodoPagoPro" value="Yape"> Yape</label><label><input type="radio" name="metodoPagoPro" value="Plin"> Plin</label><label><input type="radio" name="metodoPagoPro" value="Tarjeta"> Tarjeta</label></div>
+      <section id="posQrCobro" class="pos-qr-cobro" hidden aria-live="polite"><header class="qr-pay-head"><span id="posQrCobroMarca" class="qr-pay-brand">Y</span><div><small>COBRO DIGITAL</small><h3 id="posQrCobroTitulo">Pagar con Yape</h3></div><span id="posQrCobroEstado" class="qr-pay-status">QR disponible</span></header><div class="qr-pay-amount"><span>Total a cobrar</span><strong id="posQrCobroMonto">S/ 0.00</strong></div><div class="qr-pay-image"><img id="posQrCobroImagen" alt="Código QR de cobro" hidden><div id="posQrCobroVacio" class="qr-empty" hidden><span>▦</span><b>QR no configurado</b><small>Agrega este QR en Datos de la tienda.</small></div></div><p id="posQrCobroNota"></p><footer class="qr-pay-notice">✓ Verifica que el dinero llegue a tu cuenta antes de entregar el pedido. El POS no confirma pagos automáticamente.</footer></section>
+      <div id="proCalculoVuelto" class="pos-pro-vuelto"><label for="proRecibido">Monto recibido (S/)</label><input id="proRecibido" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Importe recibido"><div class="pos-pro-vuelto-linea"><span>Vuelto estimado</span><strong id="proVuelto">S/ 0.00</strong></div><small>El método de pago quedará registrado en la venta; no se procesa ningún cobro electrónico.</small></div>
+    </div>
+    <div class="card pedido-panel pedido-impresion">
+      <div class="pedido-encabezado-seccion"><span class="pedido-icono">🧾</span><div><span class="pedido-sobretitulo">04 · FINALIZAR VENTA</span><h2>Imprimir boleta</h2></div></div>
+      <p class="pedido-ayuda">Elige cómo deseas revisar, imprimir o guardar la boleta. PDF descarga directamente la boleta comercial en formato A4.</p>
+      <div class="acciones-pedido">
+        <button type="button" onclick="vistaPreviaBoletaSupermercado()" aria-label="Vista previa"><span class="pedido-accion-icono">👁️</span><span>Vista previa</span></button>
+        <button type="button" onclick="window.imprimirTicket()" aria-label="Imprimir en PC"><span class="pedido-accion-icono">🖨️</span><span>PC</span></button>
+        <button type="button" onclick="window.compartirBoletaDesdePedido()" aria-label="Compartir para imprimir en teléfono"><span class="pedido-accion-icono">📱</span><span>Phone</span></button>
+        <button type="button" onclick="window.guardarPDF()" aria-label="Guardar PDF"><span class="pedido-accion-icono">📄</span><span>PDF</span></button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="pos-pro-bottom-nav" aria-label="Navegación móvil">
+  <a href="inicio.html">⌂<span>Inicio</span></a>
+  <a href="scanner.html"><span class="icono-escaner">[ ||| ]</span><span>Escáner</span></a>
+  <a class="activo" href="control_pedidos.html" aria-current="page"><span class="icono-ventas">🧾</span><span>Ventas</span></a>
+  <a href="administracion.html">⚙<span>Admin</span></a>
+</nav>
+<div id="dialogoFinVenta" class="fin-venta-fondo" hidden>
+  <section class="fin-venta-modal" role="dialog" aria-modal="true" aria-labelledby="finVentaTitulo" aria-describedby="finVentaDescripcion">
+    <div class="fin-venta-icono" aria-hidden="true">🛒</div>
+    <h2 id="finVentaTitulo">¿Vaciar carrito?</h2>
+    <p id="finVentaDescripcion">La boleta ya fue generada. ¿Quieres limpiar los productos para la siguiente venta o mantenerlos?</p>
+    <div class="fin-venta-acciones">
+      <button type="button" id="finVentaMantener" class="fin-venta-mantener">Mantener</button>
+      <button type="button" id="finVentaVaciar" class="fin-venta-vaciar">Vaciar carrito</button>
+    </div>
+  </section>
+</div>
+
+<div id="ticket" class="ticket" aria-label="Vista previa de boleta" style="display:none"></div>
+
+<script src="firebase-cloud.js?v=local2"></script>
+<script src="seguridad-pos-v25.js?v=69"></script>
+<script src="app.js?v=107"></script>
+<script src="ticket_canvas.js?v=114"></script>
+<script src="inventario.js?v=56"></script>
+<script src="pago-escaneado.js?v=107"></script>
+<script src="boleta-supermercado.js?v=114"></script>
+<script src="pdf-descarga-directa.js?v=1"></script>
+<script src="fin-venta-carrito.js?v=50"></script>
+<script src="pos-profesional.js?v=54"></script>
+<script src="qr-pagos.js?v=2"></script>
+<script>
+window.compartirBoletaDesdePedido=function(){
+  if(new URLSearchParams(location.search).get('desde')==='escaner'){
+    if(typeof window.prepararPedidoEscaneadoParaCompartir==='function') window.prepararPedidoEscaneadoParaCompartir();
+  }else{
+    window.asegurarPedido(true);
+  }
+  if(new URLSearchParams(location.search).get("desde")!=="escaner" && !window.pedidoRegistradoEnPantalla)return;
+  if(new URLSearchParams(location.search).get("desde")==="escaner" && !JSON.parse(localStorage.getItem("ultimoPedido")||"null"))return;
+  window.imprimirTicketCanvas();
+};
+</script><script>
+if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>
+<div id="ticket80" class="ticket80"></div>
+
