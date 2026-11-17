@@ -1,0 +1,14 @@
+CORRECCIÓN: parpadeo de pantalla de licencia al navegar entre páginas.
+
+Se ha reemplazado licencia-pos.js y actualizado ?v=4 en páginas HTML y service-worker.js.
+
+En GitHub, repositorio pos-clientes:
+1. Reemplaza licencia-pos.js por este archivo.
+2. Reemplaza TODOS los archivos .html incluidos (mantienen el mismo diseño, pero cargan la versión v=4).
+3. Reemplaza service-worker.js para actualizar la caché de GitHub Pages.
+4. Commit changes, espera a que GitHub Pages publique.
+5. Abre tu POS y actualiza con Ctrl+F5; si seguía instalado como aplicación, cierra/reabre o elimina caché del sitio.
+
+La pantalla de licencia ahora sólo aparece cuando no hay código, la licencia es inválida/suspendida/vencida o no es posible validarla sin caché válida. Una licencia reciente se valida en segundo plano, sin mostrar el formulario brevemente. La suspensión remota sigue verificándose al entrar y cada 5 minutos mientras la página permanezca abierta.
+
+No requiere modificar Render, Neon ni el panel de propietario.

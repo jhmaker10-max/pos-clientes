@@ -1,11 +1,11 @@
 
-const CACHE_NAME = "pos-clientes-github-pages-render-v3";
+const CACHE_NAME = "pos-clientes-github-pages-render-v4";
 
 const APP_FILES = [
   "./",
   "inicio.html",
   "config-licencias.js?v=1",
-  "licencia-pos.js?v=3",
+  "licencia-pos.js?v=4",
   "index.html",
   "estilos.css?v=88",
   "stock-alertas.js?v=88",
