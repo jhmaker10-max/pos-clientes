@@ -21,7 +21,7 @@
  }
  function loading(){wrapper('PAWA POS','Comprobando tu acceso…')}
  async function request(route,payload,token){const response=await fetch(API+route,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(payload||{})});let data;try{data=await response.json()}catch(_){throw Error('Respuesta inesperada del servidor')};if(!response.ok)throw Error(data.error||'No se pudo completar la solicitud');return data}
- function accesoCuenta(message=''){
+ function accesoCuenta(message='Regístrate para recibir un código de verificación y comenzar tus 5 días gratuitos.'){
    const {s,p}=wrapper('🏪 Bienvenido a PAWA POS',message);let registro=true;
    const header=document.createElement('div');header.style.cssText='margin:14px 0;padding:15px;background:#0f172a;border:1px solid #334155;border-radius:13px';
    const subtitle=document.createElement('div');subtitle.textContent='✨ Crea tu espacio de trabajo';subtitle.style.cssText='font-size:15px;font-weight:800;color:#f8fafc;margin-bottom:6px';
@@ -64,20 +64,49 @@
    const label=document.createElement('div');label.textContent='🔐 Código de 6 dígitos';label.style.cssText='font-weight:700;font-size:14px;margin:12px 0 6px;color:#e2e8f0';
    const codigo=document.createElement('input');codigo.inputMode='numeric';codigo.maxLength=6;codigo.autocomplete='one-time-code';codigo.placeholder='Ingresa tu código aquí';codigo.style.cssText=css+';margin:0';
    const send=button('✅ Verificar y comenzar 5 días',async()=>{send.disabled=true;try{const d=await request('/api/cuenta/verificar',{correo,password,codigo:codigo.value});localStorage.setItem(TOKEN,d.token);localStorage.removeItem(CACHE);loading();await verificar()}catch(e){p.textContent=e.message;send.disabled=false}});
-   const first=button('📨 Enviar código',async()=>{
-     first.disabled=true;try{const d=await request('/api/cuenta/enviar',{correo,password});p.textContent=d.mensaje||'📬 Revisa tu correo para encontrar el código.'}
-     catch(e){p.textContent=e.message}finally{first.disabled=false}
-   });
-   const resend=button('🔁 Reenviar código',async()=>{
-     resend.disabled=true;try{const d=await request('/api/cuenta/reenviar',{correo,password});p.textContent=d.mensaje||'📬 Se solicitó un nuevo código.'}
-     catch(e){p.textContent=e.message}finally{resend.disabled=false}
-   },'#334155');
+   // Estados visibles de envío, sin confundir aceptación de Brevo con entrega en Gmail.
+   const estado=document.createElement('div');
+   estado.setAttribute('role','status');estado.setAttribute('aria-live','polite');
+   estado.style.cssText='display:none;margin-top:12px;padding:12px 13px;border-radius:11px;font-size:13px;font-weight:650;line-height:1.5;border:1px solid transparent';
+   function informar(tipo,texto){
+     const estilos={
+       pendiente:['#0c3043','#0891b2','#d6f4ff'],
+       correcto:['#103b32','#15803d','#dcfce7'],
+       error:['#451c27','#b91c1c','#fee2e2']
+     }[tipo];
+     estado.style.display='block';estado.style.background=estilos[0];estado.style.borderColor=estilos[1];estado.style.color=estilos[2];estado.textContent=texto;
+   }
+   let enviando=false,disponibleDesde=0,contador=null;
+   const first=button('📨 Enviar código',()=>solicitarCodigo('enviar'));
+   const resend=button('🔁 Reenviar código',()=>solicitarCodigo('reenviar'),'#334155');
+   function actualizarBotones(){
+     const restante=Math.max(0,Math.ceil((disponibleDesde-Date.now())/1000));
+     first.disabled=resend.disabled=enviando||restante>0;
+     first.textContent=enviando?'⏳ Enviando…':restante>0?`✅ Enviado (${restante}s)`:'📨 Enviar código';
+     resend.textContent=enviando?'⏳ Procesando…':restante>0?`🔁 Reenviar (${restante}s)`:'🔁 Reenviar código';
+     for(const b of [first,resend]){b.style.opacity=b.disabled?'0.7':'1';b.style.cursor=b.disabled?'not-allowed':'pointer'}
+     if(!enviando&&restante===0&&contador){clearInterval(contador);contador=null}
+   }
+   async function solicitarCodigo(tipo){
+     if(enviando||Date.now()<disponibleDesde)return;
+     enviando=true;actualizarBotones();
+     informar('pendiente',tipo==='enviar'?'⏳ Estamos solicitando tu código de verificación…':'⏳ Estamos solicitando el reenvío de tu código…');
+     try{
+       await request(tipo==='enviar'?'/api/cuenta/enviar':'/api/cuenta/reenviar',{correo,password});
+       informar('correcto','✅ Solicitud aceptada. El código fue enviado a Brevo. Revisa tu correo y la carpeta de spam.');
+       disponibleDesde=Date.now()+60000;
+       if(contador)clearInterval(contador);
+       contador=setInterval(()=>{if(!estado.isConnected){clearInterval(contador);contador=null;return}actualizarBotones()},1000);
+     }catch(e){
+       informar('error','⚠️ No se pudo solicitar el código: '+e.message+'. Puedes volver a intentarlo.');
+     }finally{enviando=false;actualizarBotones()}
+   }
    const actions=document.createElement('div');
    actions.style.cssText='display:flex;align-items:stretch;gap:10px;width:100%;margin-top:12px';
-   for(const b of [first,resend]){b.style.flex='1 1 0';b.style.minWidth='0';b.style.width='auto';b.style.marginTop='0';b.style.padding='12px 8px';b.style.fontSize='clamp(12px,3.1vw,14px)';b.style.whiteSpace='nowrap';}
+   for(const b of [first,resend]){b.style.flex='1 1 0';b.style.minWidth='0';b.style.width='auto';b.style.marginTop='0';b.style.padding='12px 6px';b.style.fontSize='clamp(11px,3vw,14px)';b.style.whiteSpace='normal';b.style.lineHeight='1.3';}
    actions.append(first,resend);
-   const help=document.createElement('div');help.textContent='💡 Si no ves el correo de inmediato, revisa también la carpeta de spam o promociones.';help.style.cssText='margin-top:10px;color:#94a3b8;font-size:13px;line-height:1.45';
-   const back=button('⬅️ Volver al inicio de sesión',()=>accesoCuenta(),'#334155');s.append(intro,label,codigo,actions,help,send,back);
+   const help=document.createElement('div');help.textContent='💡 Si no recibes el correo, revisa spam o promociones. Espera 60 segundos antes de solicitar otro código.';help.style.cssText='margin-top:10px;color:#94a3b8;font-size:13px;line-height:1.45';
+   const back=button('⬅️ Volver al inicio de sesión',()=>accesoCuenta(),'#334155');s.append(intro,label,codigo,actions,estado,help,send,back);
  }
  function vencido(message){const {s,p}=wrapper('Tu prueba gratuita terminó',message||'Tus 5 días de prueba han finalizado. Adquiere una licencia para continuar utilizando PAWA POS.');linkBuy(s);
    const code=document.createElement('input');code.placeholder='Introduce tu código de licencia';code.autocomplete='off';code.style.cssText=css+';margin-top:16px';code.value=localStorage.getItem(CODE)||'';

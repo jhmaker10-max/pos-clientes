@@ -1,0 +1,3 @@
+PAWA POS V20 — Confirmación visible al solicitar código.
+Enviar/Reenviar muestran estado Enviando, éxito o error. Tras una solicitud aceptada se bloquean 60 segundos para evitar duplicados. No se cambió el backend.
+Subir el contenido del ZIP a la raíz del repositorio pos-clientes.

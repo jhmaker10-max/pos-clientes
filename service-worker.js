@@ -1,11 +1,11 @@
 
-const CACHE_NAME = "pawa-pos-acceso-pro-v19";
+const CACHE_NAME = "pawa-pos-acceso-pro-v20";
 
 const APP_FILES = [
   "./",
   "inicio.html",
   "config-licencias.js?v=1",
-  "licencia-pos.js?v=19",
+  "licencia-pos.js?v=20",
   "cuenta-pawa.js?v=6",
   "pawa-paneles.css?v=6",
   "mi-cuenta.html",
