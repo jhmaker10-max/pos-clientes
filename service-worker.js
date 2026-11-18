@@ -1,12 +1,14 @@
 
-const CACHE_NAME = "pawa-pos-cuenta-nav-v12";
+const CACHE_NAME = "pawa-pos-cuenta-fullpage-v13";
 
 const APP_FILES = [
   "./",
   "inicio.html",
   "config-licencias.js?v=1",
-  "licencia-pos.js?v=10",
-  "cuenta-pawa.js?v=2",
+  "licencia-pos.js?v=11",
+  "cuenta-pawa.js?v=4",
+  "pawa-paneles.css?v=4",
+  "mi-cuenta.html",
   "clave-admin-pawa.js?v=1",
   "index.html",
   "estilos.css?v=91",

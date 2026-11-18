@@ -1,0 +1,10 @@
+PAWA POS — Mi cuenta como página independiente
+
+Sube todos los archivos de este ZIP al mismo repositorio de POS Clientes.
+No hay cambios en Render, Neon o Brevo.
+Mi cuenta es mi-cuenta.html: no es modal y no exige desbloquear Administración.
+Verifica desde Inicio, Escáner, Ventas y Administración, tanto en PC como móvil.
+Para evitar caché antigua, la versión de cuenta-pawa.js, licencia-pos.js y CSS fue incrementada.
+La cuenta requiere sesión válida y su información se consulta desde Neon.
+Una licencia vencida no impide consultar, cerrar o eliminar una cuenta desde mi-cuenta.html.
+La eliminación conserva el comportamiento anterior, y los datos locales no se borran.

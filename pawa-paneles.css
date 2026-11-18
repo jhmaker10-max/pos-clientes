@@ -32,3 +32,23 @@
 .pawa-account-warning{border-color:#fecaca}.pawa-account-warning h3{color:#b91c1c}.pawa-account-warning p{font-size:13px;line-height:1.55;margin:0}
 @media(max-width:600px){#pawa-cuenta-fondo{padding:8px}#pawa-cuenta-dialogo{max-height:94vh;border-radius:15px}.pawa-account-header{padding:18px 16px}.pawa-account-body{padding:14px;gap:13px}.pawa-account-header h2{font-size:20px}.pawa-account-brand{gap:10px}.pawa-account-avatar{width:41px;height:41px;font-size:22px}.pawa-account-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.pawa-account-stats article{padding:11px 8px}.pawa-account-stats strong{font-size:12px}.pawa-account-stats small{font-size:10px}.pawa-account-summary{padding:14px;flex-wrap:wrap}.pawa-account-pill{margin-left:auto}.pawa-account-card,.pawa-account-actions,.pawa-account-warning{padding:15px}.pawa-security-head{flex-wrap:wrap;padding:17px 15px}.pawa-security-fields{grid-template-columns:1fr;padding:0 15px 15px}.pawa-security-notice{margin:14px 15px!important}.pawa-security-footer{flex-direction:column;align-items:stretch;padding:15px}#pawaAdminGuardarClave{width:100%!important}}
 @media print{#pawa-cuenta-fondo{display:none!important}}
+
+/* Mi cuenta es una pantalla principal completa, no un modal. */
+body.pawa-cuenta-pagina{min-height:100vh;background:var(--fondo,#f8fafc);color:var(--producto-datos-color,#172033)}
+.pawa-account-main{box-sizing:border-box;width:min(1180px,100%);margin:0 auto;padding:26px 26px 110px}
+.pawa-account-page-heading{padding:18px 2px 22px}
+.pawa-account-page-heading h1{margin:7px 0;font-size:clamp(26px,3vw,36px);color:var(--producto-datos-color,#172033)}
+.pawa-account-page-heading p{margin:0;font-size:14px;opacity:.8}
+#pawa-cuenta-panel{width:100%;max-width:none;background:transparent;box-shadow:none;border:0}
+#pawa-cuenta-panel>.pawa-account-header{border:1px solid var(--borde-ui,#d8e0e8);border-radius:17px;background:var(--producto-fondo,#fff)}
+#pawa-cuenta-panel .pawa-account-body{padding:20px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+#pawa-cuenta-panel .pawa-account-summary,#pawa-cuenta-panel .pawa-account-stats,#pawa-cuenta-panel .pawa-account-warning{grid-column:1/-1}
+#pawa-cuenta-panel .pawa-account-actions button,#pawa-cuenta-panel .pawa-account-card button{font:inherit;display:block;width:100%;border-radius:10px;min-height:45px;padding:11px 15px;cursor:pointer;font-size:13px;font-weight:750;margin:10px 0 0}
+#pawa-cuenta-panel .pawa-account-logout{border:1px solid var(--borde-ui,#e2e8f0);background:var(--superficie-suave,#f1f5f9);color:inherit}
+#pawa-cuenta-panel .pawa-account-delete{border:1px solid #fecaca;background:#fff1f2;color:#991b1b}
+#pawa-cuenta-panel .pawa-account-card input{box-sizing:border-box;width:100%;margin:7px 0;padding:12px;border:1px solid var(--borde-ui,#cbd5e1);border-radius:10px;background:var(--fondo,#fff);color:inherit;font:inherit}
+body.pawa-cuenta-pagina .pos-pro-nav{display:flex}
+body.pawa-cuenta-pagina .pos-pro-bottom-nav{display:none}
+@media(max-width:1099px){body.pawa-cuenta-pagina .pos-pro-nav{display:none}body.pawa-cuenta-pagina .pos-pro-bottom-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))!important} .pawa-account-main{padding:18px 15px 100px}}
+@media(max-width:680px){#pawa-cuenta-panel .pawa-account-body{grid-template-columns:1fr;gap:13px} .pawa-account-page-heading{padding-bottom:16px}#pawa-cuenta-panel>.pawa-account-header{padding:18px 16px}}
+@media print{body.pawa-cuenta-pagina .pos-pro-nav,body.pawa-cuenta-pagina .pos-pro-bottom-nav{display:none!important}}
