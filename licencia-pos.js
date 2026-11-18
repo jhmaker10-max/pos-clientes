@@ -10,15 +10,31 @@
  function layer(){let el=document.getElementById('licenciaBloqueo');if(!el){el=document.createElement('div');el.id='licenciaBloqueo';el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#0b1220;color:#eaf3ff;display:grid;place-items:center;padding:16px;font:16px system-ui';document.body.append(el)}el.replaceChildren();return el}
  function wrapper(title,message){const l=layer(),s=document.createElement('section');s.style.cssText='background:#162338;border:1px solid #334155;border-radius:18px;max-width:450px;width:100%;padding:26px;box-shadow:0 25px 60px #0006';const h=document.createElement('h2');h.textContent=title;h.style.margin='0 0 10px';const p=document.createElement('p');p.textContent=message;p.style.cssText='color:#cbd5e1;line-height:1.55';s.append(h,p);l.append(s);return {s,p}}
  function button(text,onClick,background='#06b6d4'){const b=document.createElement('button');b.textContent=text;b.style.cssText=`font:inherit;display:block;margin-top:12px;width:100%;padding:13px;border:0;border-radius:9px;background:${background};color:white;cursor:pointer;font-weight:700`;b.onclick=onClick;return b}
- function linkBuy(s){const a=document.createElement('a');a.href=wa();a.target='_blank';a.rel='noopener noreferrer';a.textContent='Comprar licencia por WhatsApp: 986109354';a.style.cssText='display:block;margin-top:14px;padding:13px;background:#16a34a;color:white;text-align:center;border-radius:9px;text-decoration:none;font-weight:700';s.append(a)}
+ function linkBuy(s){
+   const panel=document.createElement('div');panel.style.cssText='margin-top:20px;padding:16px;background:linear-gradient(145deg,#102d2a,#102639);border:1px solid #2c695c;border-radius:14px';
+   const heading=document.createElement('div');heading.textContent='💚 ¿Prefieres una licencia completa?';heading.style.cssText='font-size:15px;font-weight:800;color:#f0fdf4;margin-bottom:6px';
+   const info=document.createElement('p');info.textContent='Activa PAWA POS para tu negocio. Consulta los planes disponibles directamente con nosotros.';info.style.cssText='color:#cbd5e1;font-size:13px;line-height:1.5;margin:0 0 12px';
+   const a=document.createElement('a');a.href=wa();a.target='_blank';a.rel='noopener noreferrer';a.textContent='💬 Comprar licencia por WhatsApp';a.style.cssText='display:block;padding:14px 10px;background:#16a34a;color:#fff;text-align:center;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;box-shadow:0 4px 16px #16a34a44;transition:filter .15s';
+   a.addEventListener('mouseenter',()=>a.style.filter='brightness(1.12)');a.addEventListener('mouseleave',()=>a.style.filter='');
+   const phone=document.createElement('div');phone.textContent='📱 Atención: 986 109 354';phone.style.cssText='font-size:12px;color:#a7f3d0;text-align:center;margin-top:10px';
+   panel.append(heading,info,a,phone);s.append(panel)
+ }
  function loading(){wrapper('PAWA POS','Comprobando tu acceso…')}
  async function request(route,payload,token){const response=await fetch(API+route,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(payload||{})});let data;try{data=await response.json()}catch(_){throw Error('Respuesta inesperada del servidor')};if(!response.ok)throw Error(data.error||'No se pudo completar la solicitud');return data}
  function accesoCuenta(message='Regístrate para recibir un código de verificación y comenzar tus 5 días gratuitos.'){
-   const {s,p}=wrapper('Bienvenido a PAWA POS',message);let registro=true;
-   const tienda=document.createElement('input');tienda.placeholder='Nombre de tu tienda';tienda.autocomplete='organization';tienda.style.cssText=css+';margin:8px 0';
-   const correo=document.createElement('input');correo.type='email';correo.autocomplete='email';correo.placeholder='Correo electrónico';correo.style.cssText=css+';margin:8px 0';
-   const pass=document.createElement('input');pass.type='password';pass.autocomplete='new-password';pass.placeholder='Contraseña (mínimo 10 caracteres)';pass.style.cssText=css+';margin:8px 0';
-   const submit=button('Crear cuenta y continuar',async()=>{
+   const {s,p}=wrapper('🏪 Bienvenido a PAWA POS',message);let registro=true;
+   const header=document.createElement('div');header.style.cssText='margin:14px 0;padding:15px;background:#0f172a;border:1px solid #334155;border-radius:13px';
+   const subtitle=document.createElement('div');subtitle.textContent='✨ Crea tu espacio de trabajo';subtitle.style.cssText='font-size:15px;font-weight:800;color:#f8fafc;margin-bottom:6px';
+   const description=document.createElement('div');description.textContent='Registra tu tienda, confirma tu correo y prueba PAWA POS durante 5 días gratis.';description.style.cssText='font-size:13px;line-height:1.55;color:#cbd5e1';
+   header.append(subtitle,description);
+   function field(text,el){const wrap=document.createElement('div');wrap.style.cssText='margin-top:12px';const lbl=document.createElement('label');lbl.textContent=text;lbl.style.cssText='display:block;margin-bottom:6px;font-size:13px;font-weight:700;color:#e2e8f0';wrap.append(lbl,el);return wrap}
+   const tienda=document.createElement('input');tienda.placeholder='Ej. Mi Bodega';tienda.autocomplete='organization';tienda.style.cssText=css+';margin:0';
+   const tiendaField=field('🏬 Nombre de tu tienda',tienda);
+   const correo=document.createElement('input');correo.type='email';correo.autocomplete='email';correo.placeholder='tucorreo@ejemplo.com';correo.style.cssText=css+';margin:0';
+   const correoField=field('📧 Correo electrónico',correo);
+   const pass=document.createElement('input');pass.type='password';pass.autocomplete='new-password';pass.placeholder='Mínimo 10 caracteres';pass.style.cssText=css+';margin:0';
+   const passField=field('🔐 Crear contraseña',pass);
+   const submit=button('✅ Crear cuenta y continuar',async()=>{
      if(!correo.value.trim()||!pass.value||(registro&&!tienda.value.trim())){p.textContent='Completa todos los campos';return}
      submit.disabled=true;
      try{const d=await request(registro?'/api/cuenta/registrar':'/api/cuenta/entrar',{tienda:tienda.value,correo:correo.value,password:pass.value});
@@ -26,8 +42,19 @@
        localStorage.setItem(TOKEN,d.token);localStorage.removeItem(CACHE);loading();await verificar();
      }catch(e){p.textContent=e.message;submit.disabled=false}
    });
-   const toggle=button('Ya tengo cuenta: iniciar sesión',()=>{registro=!registro;tienda.style.display=registro?'block':'none';submit.textContent=registro?'Crear cuenta y continuar':'Iniciar sesión';toggle.textContent=registro?'Ya tengo cuenta: iniciar sesión':'Crear una cuenta nueva';pass.autocomplete=registro?'new-password':'current-password'},'#334155');
-   s.append(tienda,correo,pass,submit,toggle);linkBuy(s);
+   const toggle=button('🔑 Ya tengo cuenta: iniciar sesión',()=>{
+     registro=!registro;
+     tiendaField.style.display=registro?'block':'none';
+     subtitle.textContent=registro?'✨ Crea tu espacio de trabajo':'👋 Qué bueno verte de nuevo';
+     description.textContent=registro?'Registra tu tienda, confirma tu correo y prueba PAWA POS durante 5 días gratis.':'Ingresa con tu correo y contraseña para continuar donde te quedaste.';
+     submit.textContent=registro?'✅ Crear cuenta y continuar':'🔓 Iniciar sesión';
+     toggle.textContent=registro?'🔑 Ya tengo cuenta: iniciar sesión':'✨ Crear una cuenta nueva';
+     passField.querySelector('label').textContent=registro?'🔐 Crear contraseña':'🔒 Tu contraseña';
+     pass.placeholder=registro?'Mínimo 10 caracteres':'Introduce tu contraseña';
+     pass.autocomplete=registro?'new-password':'current-password';
+   },'#334155');
+   const help=document.createElement('div');help.textContent='🛡️ Tus datos de acceso son personales. Nunca compartas tu contraseña.';help.style.cssText='font-size:12px;color:#94a3b8;line-height:1.5;margin-top:12px';
+   s.append(header,tiendaField,correoField,passField,submit,toggle,help);linkBuy(s);
  }
  function verificacionCorreo(correo,password,message){
    const {s,p}=wrapper('📧 Verifica tu correo',message||`Pulsa «Enviar código» para recibirlo en ${correo}. Tu prueba comienza al verificarlo.`);

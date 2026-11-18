@@ -1,0 +1,6 @@
+PAWA POS V18 — Registro e inicio de sesion con diseno profesional y bloque de compra por WhatsApp.
+
+Sube el contenido de este ZIP directamente a la raiz de pos-clientes en GitHub Pages.
+Se modificaron licencia-pos.js, referencias ?v=18 en HTML y service-worker.js para refrescar la cache.
+No es necesario cambiar Render, Neon, Brevo ni la pagina comercial.
+Se conserva la logica original de registro, inicio de sesion y licencias.
