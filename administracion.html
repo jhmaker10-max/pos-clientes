@@ -3,9 +3,10 @@
 <head>
 <script src="config-licencias.js?v=1"></script>
 <script src="licencia-pos.js?v=10"></script>
-<script src="cuenta-pawa.js?v=2"></script>
+<script src="cuenta-pawa.js?v=3"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="estilos.css?v=89">
+<link rel="stylesheet" href="pawa-paneles.css?v=1">
 <title>Administración de tienda</title>
 <script src="acceso-panel-moderno.js?v=58"></script>
 </head>
@@ -143,14 +144,22 @@
           <article class="pos-qr-admin-item qr-plin"><header class="qr-card-head"><span class="qr-brand">P</span><div><h4>Plin</h4><small id="qrPlinEstado">Sin configurar</small></div></header><div class="qr-preview"><img id="qrPlinVista" class="pos-qr-admin-imagen" alt="QR de Plin" hidden><div id="qrPlinVacio" class="qr-empty"><span>▦</span><b>QR no configurado</b><small>Agrega la imagen de tu QR.</small></div></div><div class="qr-actions"><label for="qrPlinInput" class="qr-upload">Subir / cambiar QR</label><input type="file" id="qrPlinInput" accept="image/png,image/jpeg,image/webp"><button type="button" id="qrPlinQuitar" class="pos-qr-quitar">Quitar</button></div></article>
         </div><p class="qr-admin-note">ⓘ Admite PNG, JPG o WebP. Pulsa <b>GUARDAR CAMBIOS</b> para aplicar la configuración.</p>
       </section>
-      <section id="pawaConfigClaveAdmin" style="padding:16px;border:1px solid #94a3b8;border-radius:12px;margin:14px 0">
-        <h3>Contraseña de administración de tu tienda</h3>
-        <p id="pawaAdminEstado" class="admin-descripcion">Consultando configuración…</p>
-        <input id="pawaAdminActual" type="password" autocomplete="current-password" placeholder="Contraseña actual (solo si vas a cambiarla)">
-        <input id="pawaAdminNueva" type="password" autocomplete="new-password" placeholder="Nueva contraseña (mínimo 10 caracteres)">
-        <input id="pawaAdminConfirmar" type="password" autocomplete="new-password" placeholder="Repetir nueva contraseña">
-        <button id="pawaAdminGuardarClave" type="button">Guardar contraseña de administración</button>
-        <p class="admin-descripcion">Se almacena protegida en Neon y se solicita en los siguientes accesos a Administración y Ventas.</p>
+      <section id="pawaConfigClaveAdmin" class="pawa-admin-security" aria-labelledby="pawaAdminTitulo">
+        <header class="pawa-security-head">
+          <span class="pawa-security-icon" aria-hidden="true">🔐</span>
+          <div><span class="pawa-eyebrow">SEGURIDAD DE TU NEGOCIO</span><h3 id="pawaAdminTitulo">Acceso de administración</h3><p>Protege la configuración de tu tienda y el acceso a los paneles restringidos.</p></div>
+          <span id="pawaAdminBadge" class="pawa-security-badge">Consultando…</span>
+        </header>
+        <p id="pawaAdminEstado" class="pawa-security-notice" role="status" aria-live="polite">Consultando configuración…</p>
+        <div class="pawa-security-fields">
+          <div class="pawa-admin-field" id="pawaAdminActualWrap">
+            <label for="pawaAdminActual">Contraseña actual</label>
+            <input id="pawaAdminActual" type="password" autocomplete="current-password" placeholder="Tu contraseña actual">
+          </div>
+          <div class="pawa-admin-field"><label for="pawaAdminNueva">Nueva contraseña</label><input id="pawaAdminNueva" type="password" autocomplete="new-password" minlength="4" maxlength="128" placeholder="Mínimo 4 caracteres"><small>Se aceptan desde 4 caracteres; se recomienda una contraseña más larga.</small></div>
+          <div class="pawa-admin-field"><label for="pawaAdminConfirmar">Confirmar contraseña</label><input id="pawaAdminConfirmar" type="password" autocomplete="new-password" minlength="4" maxlength="128" placeholder="Repite la nueva contraseña"></div>
+        </div>
+        <div class="pawa-security-footer"><span>🛡️ La contraseña se almacena protegida en Neon y es independiente de tu cuenta PAWA.</span><button id="pawaAdminGuardarClave" type="button">Guardar contraseña <span aria-hidden="true">→</span></button></div>
       </section>
       <label>Logo de la tienda</label>
       <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg">
@@ -265,6 +274,6 @@ function cancelarEdicionProducto() {
   <a href="scanner.html"><span class="icono-escaner">[ ||| ]</span><span>Escáner</span></a>
   <a href="control_pedidos.html"><span class="icono-ventas">🧾</span><span>Ventas</span></a>
   <a class="activo" href="administracion.html" aria-current="page">⚙<span>Admin</span></a>
-</nav><script src="clave-admin-pawa.js?v=1"></script>
+</nav><script src="clave-admin-pawa.js?v=2"></script>
 </body>
 </html>
