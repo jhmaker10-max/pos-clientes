@@ -1,0 +1,8 @@
+PAWA POS V22 — Instalación desde el propio POS
+
+1. En GitHub sube instalar.html y reemplaza inicio.html y service-worker.js.
+2. La URL de instalación es https://jhmaker10-max.github.io/pos-clientes/instalar.html
+3. En la página comercial enlaza el botón Instalar a esa URL; no hace falta cambiar otros archivos del POS.
+4. En Chrome o Edge el botón solicitará instalación cuando el navegador la ofrezca. En iPhone/Safari se muestran pasos para Añadir a pantalla de inicio.
+5. No elimina datos locales, no modifica ventas, licencias, escáner, boletas ni Administración.
+6. La instalación nunca se puede imponer sin confirmación del usuario; la opción exacta depende del navegador.

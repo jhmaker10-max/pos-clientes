@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101c2e">
+  <meta name="application-name" content="PAWA POS">
+  <meta name="apple-mobile-web-app-title" content="PAWA POS">
+  <link rel="manifest" href="manifest.json?v=22">
+  <link rel="icon" type="image/png" href="pawa-favicon.png?v=21">
+  <link rel="apple-touch-icon" href="pawa-apple-touch-icon.png?v=21">
+  <title>Instalar PAWA POS</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light;--ink:#172c3f;--muted:#5d7182;--line:#dbe5ec;--accent:#087b9b}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100dvh;background:linear-gradient(150deg,#eff4f8,#f8fafc 60%);color:var(--ink)}
+    .shell{width:min(100% - 32px,660px);margin:0 auto;padding:34px 0 70px}
+    .back{display:inline-flex;align-items:center;gap:6px;color:#315c70;text-decoration:none;font-size:14px;font-weight:650;margin-bottom:24px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 14px 50px #16374f12;padding:clamp(22px,5vw,40px)}
+    .brand{display:flex;align-items:center;gap:15px;margin-bottom:26px}
+    .brand img{width:70px;height:70px;object-fit:cover;border-radius:17px;box-shadow:0 7px 18px #0002}
+    .brand h1{font-size:25px;margin:0 0 4px;letter-spacing:-.035em}
+    .brand small{color:var(--muted);font-size:13px}
+    .eyebrow{text-transform:uppercase;color:#087b9b;font-weight:800;font-size:11px;letter-spacing:.12em}
+    h2{font-size:clamp(24px,5.5vw,33px);letter-spacing:-.04em;line-height:1.15;margin:10px 0}
+    .lead{font-size:15px;color:var(--muted);line-height:1.7;margin:0 0 24px}
+    .primary{width:100%;display:flex;justify-content:center;align-items:center;gap:9px;background:#087b9b;color:white;border:0;border-radius:12px;min-height:52px;font-size:15px;font-weight:750;cursor:pointer;text-decoration:none;padding:12px 18px}
+    .primary:focus-visible,.secondary:focus-visible,.back:focus-visible{outline:3px solid #58c8dc;outline-offset:3px}
+    .primary:hover{background:#076780}
+    .secondary{display:block;text-align:center;color:#2a6076;font-size:14px;text-decoration:none;font-weight:700;margin-top:18px}
+    .notice{margin-top:20px;padding:12px 15px;border-radius:10px;background:#e9f4f8;border:1px solid #b9deeb;color:#23586e;font-size:13px;line-height:1.55}
+    .steps{margin-top:25px;border-top:1px solid var(--line);padding-top:22px}
+    .steps h3{font-size:16px;margin:0 0 14px}
+    .step{display:flex;align-items:flex-start;gap:12px;margin:13px 0;color:#455d70;line-height:1.6;font-size:14px}
+    .num{flex:none;width:25px;height:25px;border-radius:8px;background:#dff2f7;color:#086f8e;display:grid;place-items:center;font-weight:800;font-size:12px}
+    .is-hidden{display:none!important}
+    .foot{font-size:12px;color:#6a7f91;text-align:center;line-height:1.6;margin-top:18px}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <a class="back" href="inicio.html">← Volver a PAWA POS</a>
+    <section class="card" aria-labelledby="heading">
+      <div class="brand"><img src="pawa-icon-192.png" width="70" height="70" alt="Logo oficial de PAWA POS"><div><h1>PAWA POS</h1><small>Aplicación para tu negocio</small></div></div>
+      <div class="eyebrow">Instalación oficial</div>
+      <h2 id="heading">Lleva PAWA POS a tu dispositivo</h2>
+      <p class="lead">Accede rápidamente desde el escritorio o la pantalla de inicio. Utilizarás tu misma cuenta y licencia de PAWA POS.</p>
+      <button class="primary" id="installBtn" type="button">Instalar PAWA POS</button>
+      <div id="status" class="notice" role="status" aria-live="polite">Selecciona «Instalar PAWA POS» para continuar.</div>
+      <div id="help" class="steps is-hidden" aria-live="polite">
+        <h3 id="helpTitle">Instalación manual</h3>
+        <div id="helpSteps"></div>
+      </div>
+      <a href="inicio.html" class="secondary">Continuar en versión web</a>
+    </section>
+    <p class="foot">La instalación depende del navegador y del dispositivo. No descarga archivos ejecutables y no reinicia el período de prueba.</p>
+  </main>
+  <script>
+  (()=>{
+    'use strict';
+    const btn=document.getElementById('installBtn');
+    const status=document.getElementById('status');
+    const help=document.getElementById('help');
+    const title=document.getElementById('helpTitle');
+    const steps=document.getElementById('helpSteps');
+    let deferredPrompt=null;
+    const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+    const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isAndroid=/Android/i.test(navigator.userAgent);
+    function showHelp(){
+      const content=isIOS?{
+        title:'Instalar en iPhone o iPad',
+        steps:['Abre este enlace en Safari.','Toca Compartir (icono cuadrado con flecha hacia arriba).','Selecciona «Añadir a pantalla de inicio» y confirma «Añadir».']
+      }:isAndroid?{
+        title:'Instalar en Android',
+        steps:['Abre PAWA POS en Chrome.','Toca el menú de tres puntos ⋮.','Selecciona «Instalar aplicación» o «Añadir a pantalla de inicio» y confirma.']
+      }:{
+        title:'Instalar en Windows o computadora',
+        steps:['Abre PAWA POS con Chrome o Microsoft Edge.','En la barra de direcciones, busca el icono de instalación o abre el menú ⋮.','Selecciona «Instalar PAWA POS» o «Aplicaciones → Instalar este sitio como aplicación».','Si solo se ofrece crear un acceso directo, puedes usar esa opción.']
+      };
+      title.textContent=content.title;
+      steps.replaceChildren();
+      content.steps.forEach((step,i)=>{
+        const row=document.createElement('div');row.className='step';
+        const n=document.createElement('span');n.className='num';n.textContent=String(i+1);
+        const t=document.createElement('span');t.textContent=step;
+        row.append(n,t);steps.append(row);
+      });
+      help.classList.remove('is-hidden');
+    }
+    function alreadyInstalled(){
+      if(isStandalone()){
+        btn.textContent='PAWA POS ya está instalado';btn.disabled=true;
+        status.textContent='Estás utilizando PAWA POS como aplicación instalada.';
+        return true;
+      }
+      return false;
+    }
+    window.addEventListener('beforeinstallprompt',event=>{
+      event.preventDefault();
+      deferredPrompt=event;
+      if(!alreadyInstalled()){
+        status.textContent='La instalación está disponible. Pulsa el botón para continuar.';
+      }
+    });
+    window.addEventListener('appinstalled',()=>{
+      deferredPrompt=null;btn.disabled=true;btn.textContent='PAWA POS instalado';
+      status.textContent='Instalación completada. Busca PAWA POS en tus aplicaciones.';
+      help.classList.add('is-hidden');
+    });
+    btn.addEventListener('click',async()=>{
+      if(alreadyInstalled())return;
+      if(deferredPrompt){
+        const prompt=deferredPrompt;deferredPrompt=null;
+        btn.disabled=true;status.textContent='Confirma la instalación en la ventana del navegador.';
+        try{
+          await prompt.prompt();
+          const choice=await prompt.userChoice;
+          status.textContent=choice.outcome==='accepted'?'Solicitud aceptada. Comprueba si PAWA POS aparece entre tus aplicaciones.':'Instalación cancelada. Puedes volver a intentarlo desde el menú de tu navegador.';
+        }catch(_){status.textContent='No se pudo abrir la instalación automática. Sigue las instrucciones manuales.';showHelp();}
+        finally{btn.disabled=false;}
+      }else{
+        showHelp();
+        status.textContent=isIOS?'En iPhone, utiliza Safari → Compartir → Añadir a pantalla de inicio.':'Tu navegador no ofreció la instalación automática. Sigue estos pasos para instalar o crear un acceso directo.';
+      }
+    });
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('service-worker.js?v=22',{updateViaCache:'none'}).catch(()=>{});
+    }
+    alreadyInstalled();
+    if(isIOS&&!isStandalone()){
+      status.textContent='En iPhone, Safari permite añadir PAWA POS a la pantalla de inicio.';
+    }
+  })();
+  </script>
+</body>
+</html>
