@@ -30,18 +30,27 @@
    s.append(tienda,correo,pass,submit,toggle);linkBuy(s);
  }
  function verificacionCorreo(correo,password,message){
-   const {s,p}=wrapper('Verifica tu correo',message||`Pulsa Enviar código para recibirlo en ${correo}. Tu prueba comienza al verificarlo.`);
-   const codigo=document.createElement('input');codigo.inputMode='numeric';codigo.maxLength=6;codigo.autocomplete='one-time-code';codigo.placeholder='Código de 6 dígitos';codigo.style.cssText=css+';margin:8px 0';
-   const send=button('Verificar y comenzar 5 días',async()=>{send.disabled=true;try{const d=await request('/api/cuenta/verificar',{correo,password,codigo:codigo.value});localStorage.setItem(TOKEN,d.token);localStorage.removeItem(CACHE);loading();await verificar()}catch(e){p.textContent=e.message;send.disabled=false}});
-   const first=button('Enviar código',async()=>{
-     first.disabled=true;try{const d=await request('/api/cuenta/enviar',{correo,password});p.textContent=d.mensaje||'Revisa tu correo para encontrar el código.'}
+   const {s,p}=wrapper('📧 Verifica tu correo',message||`Pulsa <Enviar código> para recibirlo en ${correo}. Tu prueba comienza al verificarlo.`);
+   const intro=document.createElement('div');
+   intro.style.cssText='margin:14px 0 6px;padding:14px;border:1px solid #334155;border-radius:12px;background:#0f172a';
+   intro.innerHTML=`<div style="font-weight:800;font-size:15px;margin-bottom:6px">✨ Verificación de cuenta</div><div style="color:#cbd5e1;line-height:1.55;font-size:14px">Introduce el código de 6 dígitos enviado a tu correo para activar tu acceso y comenzar tus <strong style="color:#fff">5 días gratis</strong>.</div>`;
+   const label=document.createElement('div');label.textContent='🔐 Código de 6 dígitos';label.style.cssText='font-weight:700;font-size:14px;margin:12px 0 6px;color:#e2e8f0';
+   const codigo=document.createElement('input');codigo.inputMode='numeric';codigo.maxLength=6;codigo.autocomplete='one-time-code';codigo.placeholder='Ingresa tu código aquí';codigo.style.cssText=css+';margin:0';
+   const send=button('✅ Verificar y comenzar 5 días',async()=>{send.disabled=true;try{const d=await request('/api/cuenta/verificar',{correo,password,codigo:codigo.value});localStorage.setItem(TOKEN,d.token);localStorage.removeItem(CACHE);loading();await verificar()}catch(e){p.textContent=e.message;send.disabled=false}});
+   const first=button('📨 Enviar código',async()=>{
+     first.disabled=true;try{const d=await request('/api/cuenta/enviar',{correo,password});p.textContent=d.mensaje||'📬 Revisa tu correo para encontrar el código.'}
      catch(e){p.textContent=e.message}finally{first.disabled=false}
    });
-   const resend=button('Reenviar código',async()=>{
-     resend.disabled=true;try{const d=await request('/api/cuenta/reenviar',{correo,password});p.textContent=d.mensaje||'Se solicitó un nuevo código.'}
+   const resend=button('🔁 Reenviar código',async()=>{
+     resend.disabled=true;try{const d=await request('/api/cuenta/reenviar',{correo,password});p.textContent=d.mensaje||'📬 Se solicitó un nuevo código.'}
      catch(e){p.textContent=e.message}finally{resend.disabled=false}
    },'#334155');
-   const back=button('Volver al inicio de sesión',()=>accesoCuenta(),'#334155');s.append(codigo,first,send,resend,back);
+   const actions=document.createElement('div');
+   actions.style.cssText='display:flex;align-items:stretch;gap:10px;width:100%;margin-top:12px';
+   for(const b of [first,resend]){b.style.flex='1 1 0';b.style.minWidth='0';b.style.width='auto';b.style.marginTop='0';b.style.padding='12px 8px';b.style.fontSize='clamp(12px,3.1vw,14px)';b.style.whiteSpace='nowrap';}
+   actions.append(first,resend);
+   const help=document.createElement('div');help.textContent='💡 Si no ves el correo de inmediato, revisa también la carpeta de spam o promociones.';help.style.cssText='margin-top:10px;color:#94a3b8;font-size:13px;line-height:1.45';
+   const back=button('⬅️ Volver al inicio de sesión',()=>accesoCuenta(),'#334155');s.append(intro,label,codigo,actions,help,send,back);
  }
  function vencido(message){const {s,p}=wrapper('Tu prueba gratuita terminó',message||'Tus 5 días de prueba han finalizado. Adquiere una licencia para continuar utilizando PAWA POS.');linkBuy(s);
    const code=document.createElement('input');code.placeholder='Introduce tu código de licencia';code.autocomplete='off';code.style.cssText=css+';margin-top:16px';code.value=localStorage.getItem(CODE)||'';
