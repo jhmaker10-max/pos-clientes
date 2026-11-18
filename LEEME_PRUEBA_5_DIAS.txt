@@ -1,0 +1,9 @@
+PRUEBA GRATIS AUTOMATICA DE CINCO DIAS
+1. Publica primero el servidor actualizado en Render; este crea la tabla pos_pruebas en Neon.
+2. Publica los archivos actualizados del POS en GitHub Pages.
+3. En la primera visita el navegador crea un ID aleatorio y Neon registra los cinco dias.
+4. Después de 120 horas se bloquea el acceso y pide codigo de licencia.
+5. La fecha se controla en el servidor, no en el reloj del PC.
+6. Limitación: la web no identifica de modo infalible el equipo fisico; borrar almacenamiento o cambiar de navegador puede iniciar una prueba nueva.
+7. No borrar datos del POS cliente: pueden incluir productos y ventas almacenados localmente.
+8. Prueba en ventana limpia, comprueba el endpoint /api/acceso/estado, y valida una licencia real antes de publicar comercialmente.

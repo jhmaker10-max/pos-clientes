@@ -1,0 +1,12 @@
+PAWA POS CLIENTES - PUBLICACIÓN SEPARADA
+
+Este ZIP contiene SOLO el POS de clientes, sin la página comercial.
+1. Publica su contenido en el repositorio GitHub Pages del POS.
+2. Confirma en config-licencias.js la URL HTTPS real del servidor Render.
+3. Render/Neon/Brevo permanecen en el backend ya proporcionado; no requieren cambios por separar la página comercial.
+4. La entrada del POS es index.html (redirige a inicio.html), o directamente inicio.html.
+5. En Render, POS_ALLOWED_ORIGINS debe incluir el ORIGEN real del POS, no la ruta del repositorio.
+6. La página comercial se publica aparte con el ZIP PAWA_PAGINA_COMERCIAL_INDEPENDIENTE.zip.
+7. En la página comercial, establece PAWA_POS_CLIENT_URL apuntando a la URL pública de este POS.
+
+No se han alterado los módulos originales de ventas, inventario, escáner, carrito ni boletas; solo se retiró pawa.html y su referencia del service worker. Los datos almacenados localmente no se sincronizan entre equipos. El control de acceso JavaScript no es protección inviolable.
