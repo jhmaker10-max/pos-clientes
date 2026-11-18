@@ -4,7 +4,6 @@
 const TOKEN='pawa_cuenta_token_v1',CODE='pos_licencia_codigo',CACHE='pawa_estado_v1';
 const API=(window.POS_LICENSE_API_URL||location.origin).replace(/\/$/,'');
 const style=document.createElement('style');style.textContent=`
-#pawa-cuenta-abrir{position:fixed;right:14px;bottom:78px;z-index:7000;padding:10px 15px;border:0;border-radius:30px;background:#0f766e;color:white;font:600 14px system-ui;box-shadow:0 4px 15px #0004;cursor:pointer}
 #pawa-cuenta-fondo{position:fixed;inset:0;z-index:2147483647;background:#08111fcc;display:flex;justify-content:center;align-items:center;padding:16px;font:15px system-ui}
 #pawa-cuenta-dialogo{background:#fff;color:#111827;border-radius:16px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px #0006}
 #pawa-cuenta-dialogo h2{margin:0 0 14px}#pawa-cuenta-dialogo p{line-height:1.5;overflow-wrap:anywhere}
@@ -26,5 +25,19 @@ async function open(){if(!token())return;const box=modal('Mi cuenta PAWA POS'),m
  }catch(e){message.textContent='No se pudieron cargar los datos: '+e.message}}
 function deleting(box){box.replaceChildren(el('h2','Eliminar cuenta'));box.append(el('p','Esta acción elimina tu cuenta y sus sesiones del servidor, pero se conserva una huella protegida del correo para impedir otra prueba gratuita. No elimina automáticamente los productos y las ventas que estén guardados en este navegador. Exporta primero tus respaldos. Si tienes una licencia asociada deberás contactar al propietario.'));const pass=input(box,'Contraseña de tu cuenta','password'),confirmation=input(box,'Escribe ELIMINAR');const status=el('p');box.append(status);btn(box,'Eliminar definitivamente',async()=>{if(!confirm('¿Confirmas la eliminación de la cuenta?'))return;try{await api('/api/cuenta/eliminar',{password:pass.value,confirmacion:confirmation.value});localStorage.removeItem(TOKEN);localStorage.removeItem(CACHE);localStorage.removeItem(CODE);sessionStorage.clear();alert('Cuenta eliminada del servidor. Los datos locales permanecen en el navegador hasta que los borres.');location.href='inicio.html'}catch(e){status.textContent=e.message}},'danger');btn(box,'Cancelar',open,'muted')}
 window.PAWAOpenAccount=open;
-document.addEventListener('DOMContentLoaded',()=>{const b=el('button','Mi cuenta');b.id='pawa-cuenta-abrir';b.type='button';b.onclick=open;document.body.append(b);const update=()=>{b.hidden=!token()};update();window.addEventListener('storage',update)});
+document.addEventListener('DOMContentLoaded',()=>{
+ const makeLink=(container,kind)=>{
+  if(!container||container.querySelector('.pawa-cuenta-nav'))return;
+  const a=document.createElement('a');a.href='#mi-cuenta';a.className='pawa-cuenta-nav';a.setAttribute('aria-label','Abrir Mi cuenta');
+  if(kind==='mobile')a.innerHTML='<span class="pawa-cuenta-icono" aria-hidden="true">♙</span><span>Mi cuenta</span>';
+  else a.innerHTML='<span aria-hidden="true">♙</span> <span>Mi cuenta</span>';
+  a.addEventListener('click',e=>{e.preventDefault();open()});
+  const admin=container.querySelector('a[href="administracion.html"]');
+  if(admin)admin.after(a);else container.append(a);
+ };
+ document.querySelectorAll('.pos-pro-nav,.scan-pro-sidebar,.ventas-pro-sidebar,.pedido-pro-sidebar').forEach(nav=>makeLink(nav,'desktop'));
+ document.querySelectorAll('.pos-pro-bottom-nav').forEach(nav=>makeLink(nav,'mobile'));
+ const adminNav=document.querySelector('.pos-admin-sidebar');
+ if(adminNav){const a=document.createElement('a');a.href='#mi-cuenta';a.className='pawa-cuenta-nav pawa-cuenta-admin-link';a.innerHTML='<span aria-hidden="true">♙</span> Mi cuenta';a.addEventListener('click',e=>{e.preventDefault();open()});const back=adminNav.querySelector('.pos-admin-sidebar-inicio');if(back)back.before(a);else adminNav.append(a)}
+});
 })();

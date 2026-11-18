@@ -4126,3 +4126,23 @@ body.pos-pro-inicio #logoTienda {
     padding-bottom:calc(82px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+/* PAWA: quinta opción Mi cuenta integrada en la navegación nativa. */
+.pawa-cuenta-nav{cursor:pointer;}
+.pos-admin-sidebar .pawa-cuenta-admin-link{
+ display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;
+ color:var(--rosa);font-size:13px;font-weight:750;text-decoration:none;
+}
+.pos-admin-sidebar .pawa-cuenta-admin-link:hover,
+.pos-admin-sidebar .pawa-cuenta-admin-link:focus-visible{background:color-mix(in srgb,var(--rosa) 11%,var(--producto-fondo));}
+@media(max-width:1099px){
+ body.pos-pro-inicio .pos-pro-bottom-nav,
+ body.pos-pro-admin .pos-pro-bottom-nav,
+ body.pos-scan-v22 .pos-pro-bottom-nav,
+ body.pos-pedido-v23 .pos-pro-bottom-nav,
+ body.pos-ventas-v24 .pos-pro-bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr)) !important;}
+ .pos-pro-bottom-nav>a.pawa-cuenta-nav{font-size:21px !important;}
+ .pos-pro-bottom-nav .pawa-cuenta-icono{display:flex;justify-content:center;align-items:center;min-height:24px;font-size:21px;line-height:24px;}
+ .pos-pro-bottom-nav>a.pawa-cuenta-nav>span:last-child{font-size:10px !important;font-weight:750 !important;line-height:1.2 !important;}
+}
+@media print{.pawa-cuenta-nav{display:none !important;}}

@@ -1,0 +1,17 @@
+PAWA POS — NUEVO MENU Y VERIFICACION
+
+POS CLIENTES:
+- Mi cuenta se añade como quinto botón al menú lateral de escritorio y a la barra inferior del celular.
+- Se conserva la consulta de datos, cierre de sesión y solicitud de eliminación.
+- Después del registro, el cliente pulsa Enviar código; Reenviar código solo si hace falta.
+- La prueba gratuita empieza únicamente tras verificar el código.
+
+SERVIDOR (PUBLICAR PRIMERO):
+- /api/cuenta/enviar: primer correo explícito con validación y límite de 60 s.
+- /api/cuenta/reenviar: reenvía tras 60 s.
+- /api/cuenta/registrar: ya no realiza envío inicial automático.
+- Render debe tener el origen GitHub Pages en POS_ALLOWED_ORIGINS.
+
+IMPORTANTE: Brevo HTTP 201 significa aceptado, no entregado.
+Se mantiene la limitación de datos POS almacenados localmente y la protección estática del frontend.
+Hacer copia de seguridad, publicar servidor, luego clientes, probar registro y funciones de caja.

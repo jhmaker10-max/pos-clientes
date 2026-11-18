@@ -18,7 +18,7 @@
    const tienda=document.createElement('input');tienda.placeholder='Nombre de tu tienda';tienda.autocomplete='organization';tienda.style.cssText=css+';margin:8px 0';
    const correo=document.createElement('input');correo.type='email';correo.autocomplete='email';correo.placeholder='Correo electrónico';correo.style.cssText=css+';margin:8px 0';
    const pass=document.createElement('input');pass.type='password';pass.autocomplete='new-password';pass.placeholder='Contraseña (mínimo 10 caracteres)';pass.style.cssText=css+';margin:8px 0';
-   const submit=button('Registrarme y recibir mi código',async()=>{
+   const submit=button('Crear cuenta y continuar',async()=>{
      if(!correo.value.trim()||!pass.value||(registro&&!tienda.value.trim())){p.textContent='Completa todos los campos';return}
      submit.disabled=true;
      try{const d=await request(registro?'/api/cuenta/registrar':'/api/cuenta/entrar',{tienda:tienda.value,correo:correo.value,password:pass.value});
@@ -26,15 +26,22 @@
        localStorage.setItem(TOKEN,d.token);localStorage.removeItem(CACHE);loading();await verificar();
      }catch(e){p.textContent=e.message;submit.disabled=false}
    });
-   const toggle=button('Ya tengo cuenta: iniciar sesión',()=>{registro=!registro;tienda.style.display=registro?'block':'none';submit.textContent=registro?'Registrarme y recibir mi código':'Iniciar sesión';toggle.textContent=registro?'Ya tengo cuenta: iniciar sesión':'Crear una cuenta nueva';pass.autocomplete=registro?'new-password':'current-password'},'#334155');
+   const toggle=button('Ya tengo cuenta: iniciar sesión',()=>{registro=!registro;tienda.style.display=registro?'block':'none';submit.textContent=registro?'Crear cuenta y continuar':'Iniciar sesión';toggle.textContent=registro?'Ya tengo cuenta: iniciar sesión':'Crear una cuenta nueva';pass.autocomplete=registro?'new-password':'current-password'},'#334155');
    s.append(tienda,correo,pass,submit,toggle);linkBuy(s);
  }
  function verificacionCorreo(correo,password,message){
-   const {s,p}=wrapper('Verifica tu correo',message||`Introduce el código enviado a ${correo}. Tu prueba comienza al verificarlo.`);
+   const {s,p}=wrapper('Verifica tu correo',message||`Pulsa Enviar código para recibirlo en ${correo}. Tu prueba comienza al verificarlo.`);
    const codigo=document.createElement('input');codigo.inputMode='numeric';codigo.maxLength=6;codigo.autocomplete='one-time-code';codigo.placeholder='Código de 6 dígitos';codigo.style.cssText=css+';margin:8px 0';
    const send=button('Verificar y comenzar 5 días',async()=>{send.disabled=true;try{const d=await request('/api/cuenta/verificar',{correo,password,codigo:codigo.value});localStorage.setItem(TOKEN,d.token);localStorage.removeItem(CACHE);loading();await verificar()}catch(e){p.textContent=e.message;send.disabled=false}});
-   const resend=button('Reenviar código',async()=>{resend.disabled=true;try{const d=await request('/api/cuenta/reenviar',{correo,password});p.textContent=d.mensaje}catch(e){p.textContent=e.message}finally{resend.disabled=false}},'#334155');
-   const back=button('Volver al inicio de sesión',()=>accesoCuenta(),'#334155');s.append(codigo,send,resend,back);
+   const first=button('Enviar código',async()=>{
+     first.disabled=true;try{const d=await request('/api/cuenta/enviar',{correo,password});p.textContent=d.mensaje||'Revisa tu correo para encontrar el código.'}
+     catch(e){p.textContent=e.message}finally{first.disabled=false}
+   });
+   const resend=button('Reenviar código',async()=>{
+     resend.disabled=true;try{const d=await request('/api/cuenta/reenviar',{correo,password});p.textContent=d.mensaje||'Se solicitó un nuevo código.'}
+     catch(e){p.textContent=e.message}finally{resend.disabled=false}
+   },'#334155');
+   const back=button('Volver al inicio de sesión',()=>accesoCuenta(),'#334155');s.append(codigo,first,send,resend,back);
  }
  function vencido(message){const {s,p}=wrapper('Tu prueba gratuita terminó',message||'Tus 5 días de prueba han finalizado. Adquiere una licencia para continuar utilizando PAWA POS.');linkBuy(s);
    const code=document.createElement('input');code.placeholder='Introduce tu código de licencia';code.autocomplete='off';code.style.cssText=css+';margin-top:16px';code.value=localStorage.getItem(CODE)||'';
