@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "pawa-pos-acceso-pro-v20";
+const CACHE_NAME = "pawa-pos-marca-oficial-v21";
 
 const APP_FILES = [
   "./",
@@ -15,7 +15,7 @@ const APP_FILES = [
   "stock-alertas.js?v=88",
   "seguridad-pos-v25.js?v=69",
   "respaldo-pos-v25.js?v=56",
-  "app.js?v=92",
+  "app.js?v=21",
   "scanner.html",
   "scanner-producto.html",
   "scanner-producto.js?v=1",
@@ -33,11 +33,15 @@ const APP_FILES = [
   "fin-venta-carrito.js?v=50",
   "transparencia-productos.js?v=6",
   "tema.js?v=67",
-  "firebase-cloud.js?v=67",
+  "firebase-cloud.js?v=21",
   "acceso-panel-moderno.js?v=58",
-  "manifest.json",
+  "manifest.json?v=21",
   "pos-profesional.js?v=67",
-  "icon-tienda.png"
+  "icon-tienda.png",
+  "pawa-icon-192.png",
+  "pawa-icon-512.png",
+  "pawa-apple-touch-icon.png",
+  "pawa-favicon.png"
 ];
 
 // Guardar interfaz básica sin bloquear si un archivo falla

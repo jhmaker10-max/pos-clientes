@@ -6,10 +6,17 @@
 <script src="cuenta-pawa.js?v=6"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ventas | POS</title>
+<title>Ventas | PAWA POS</title>
 <link rel="stylesheet" href="estilos.css?v=76">
 <script src="tema.js?v=67" defer></script>
 <script src="acceso-panel-moderno.js?v=58"></script>
+
+<link rel="manifest" href="manifest.json?v=21">
+<link rel="icon" type="image/png" href="pawa-favicon.png?v=21">
+<link rel="apple-touch-icon" href="pawa-apple-touch-icon.png?v=21">
+<meta name="apple-mobile-web-app-title" content="PAWA POS">
+<meta name="application-name" content="PAWA POS">
+<meta name="theme-color" content="#000000">
 </head>
 <body class="pagina-historial pagina-ventas-pro pos-ventas-v24">
 <nav class="ventas-pro-sidebar" aria-label="Navegación principal">
@@ -47,13 +54,13 @@
   <div id="listaPedidos" class="ventas-listado"></div>
 </main>
 <div id="ticket" class="ticket" style="display:none" aria-label="Vista previa de boleta"></div>
-<script src="firebase-cloud.js?v=local2"></script>
+<script src="firebase-cloud.js?v=21"></script>
 <script src="seguridad-pos-v25.js?v=69"></script>
 <script src="boleta-supermercado.js?v=114"></script>
 <script src="ticket_canvas.js?v=114"></script>
 <script src="historial-ventas.js?v=57"></script>
 <script src="ventas-reportes-v24.js?v=55"></script>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js?v=20',{updateViaCache:'none'});</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js?v=21',{updateViaCache:'none'});</script>
 <nav class="pos-pro-bottom-nav" aria-label="Navegación móvil">
   <a href="inicio.html">⌂<span>Inicio</span></a>
   <a href="scanner.html"><span class="icono-escaner">[ ||| ]</span><span>Escáner</span></a>

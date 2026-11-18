@@ -1,112 +1,7 @@
 
-async function cargarLogoPWADesdeFirebase(){
- try{
-   if(typeof cloudDB==="undefined") return;
-
-   const doc = await cloudDB.collection("configuracion").doc("tienda").get();
-
-   if(doc.exists && doc.data().logoPWA){
-      const img=document.getElementById("logoPWAVista");
-      if(img){
-        img.src=doc.data().logoPWA;
-        img.style.display="block";
-      }
-   }
- }catch(e){
-   console.log("Logo PWA Firebase:",e);
- }
-}
-
-
-async function cargarLogoPWAFirebase(){
- try{
-   const doc = await cloudDB.collection("configuracion").doc("tienda").get();
-   if(doc.exists){
-     const datos=doc.data();
-     const vista=document.getElementById("logoPWAVista");
-     if(datos.logoPWA && vista){
-        vista.src=datos.logoPWA;
-        vista.style.display="block";
-        localStorage.setItem("logoPWA", datos.logoPWA);
-     }
-   }
- }catch(e){
-   console.error("Error leyendo logo PWA Firebase",e);
- }
-}
-window.addEventListener("load",()=>{
- setTimeout(cargarLogoPWAFirebase,800);
-});
-// Logo específico para instalación PWA
-let logoPWA="";
-window.addEventListener("load",()=>{
- const input=document.getElementById("logoPWAInput");
- const vista=document.getElementById("logoPWAVista");
-
- if(input){
-   input.addEventListener("change",function(){
-     const file=this.files[0];
-     if(!file) return;
-
-     const reader=new FileReader();
-     reader.onload=function(e){
-       logoPWA=e.target.result;
-       if(vista){
-          vista.src=logoPWA;
-          vista.style.display="block";
-       }
-       localStorage.setItem("logoPWA",logoPWA);
-       actualizarManifestPWA(logoPWA);
-     };
-     reader.readAsDataURL(file);
-
-     if(typeof subirLogoPWAFirebase === "function"){
-        subirLogoPWAFirebase(file).then(url=>{
-          if(vista){
-            vista.src=url;
-          }
-        });
-     }
-   });
- }
-
- const guardado=localStorage.getItem("logoPWA");
- if(guardado && vista){
-    vista.src=guardado;
-    vista.style.display="block";
- }
-});
-
-function actualizarManifestPWA(icon){
- if(!icon) return;
-
- // Guardar el logo elegido como icono real de la PWA
- localStorage.setItem("logoPWA",icon);
- localStorage.setItem("iconoPWA",icon);
-
- // Actualizar inmediatamente el manifest que usa el navegador al instalar
- if(typeof actualizarManifestDesdeFirebase === "function"){
-   actualizarManifestDesdeFirebase();
- }
-}
-
-// Si ya existe un Logo PWA guardado, volver a aplicarlo al abrir la tienda.
-// Esto evita que el navegador se quede usando icon-tienda.png del manifest fijo.
-window.addEventListener("load",()=>{
- const iconoGuardado=localStorage.getItem("logoPWA");
- if(iconoGuardado){
-   actualizarManifestPWA(iconoGuardado);
- }
-});
-
-// Actualiza el icono usado al instalar la tienda en el celular
-function actualizarIconoTienda(){
- let logo = localStorage.getItem("logoTienda") || localStorage.getItem("logoTiendaURL");
- let icon = document.getElementById("iconoTiendaApple");
- if(logo && icon) icon.href = logo;
-}
-window.addEventListener("load", actualizarIconoTienda);
-
+// PAWA POS: la marca de la aplicación instalada es fija.
+// El logo comercial de cada tienda se configura por separado.
+function actualizarIconoTienda(){ /* Icono PWA oficial: definido en manifest.json. */ }
 
 let logoTienda="";
 let imagenProducto="";
@@ -266,10 +161,6 @@ if(logoTienda && typeof subirLogoFirebase==="function"){
       localStorage.setItem("logoURL", logoURL);
       localStorage.setItem("logoTiendaURL", logoURL);
    }
-}
-// Mantener logo PWA actual antes de sincronizar
-if(localStorage.getItem("logoPWA")){
-   console.log("Logo PWA preparado para Firebase");
 }
 
 if(typeof sincronizarTiendaFirebase==="function"){

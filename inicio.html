@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+<title>PAWA POS</title>
 <script src="config-licencias.js?v=1"></script>
 <script src="licencia-pos.js?v=20"></script>
 <script src="cuenta-pawa.js?v=6"></script>
@@ -8,8 +9,15 @@
 <link rel="stylesheet" href="estilos.css?v=91">
 <script src="tema.js?v=67" defer></script>
 <script src="acceso-panel-moderno.js?v=58"></script>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" id="iconoTiendaApple" href="icon-tienda.png">
+
+
+
+<link rel="manifest" href="manifest.json?v=21">
+<link rel="icon" type="image/png" href="pawa-favicon.png?v=21">
+<link rel="apple-touch-icon" href="pawa-apple-touch-icon.png?v=21">
+<meta name="apple-mobile-web-app-title" content="PAWA POS">
+<meta name="application-name" content="PAWA POS">
+<meta name="theme-color" content="#000000">
 </head>
 
 <body class="pos-pro-inicio" onload="cargarInicio()">
@@ -36,10 +44,10 @@
 </aside>
 
 <script src="offline-catalog.js"></script>
-<script src="firebase-cloud.js?v=local2"></script>
+<script src="firebase-cloud.js?v=21"></script>
 <script src="seguridad-pos-v25.js?v=69"></script>
 <script src="stock-alertas.js?v=88"></script>
-<script src="app.js?v=88"></script>
+<script src="app.js?v=21"></script>
 <script src="carrito.js?v=50"></script>
 
 <nav class="pos-pro-bottom-nav" aria-label="Navegación móvil">
@@ -52,7 +60,7 @@
 <script src="ticket_canvas.js?v=112"></script>
 <script src="pos-profesional.js?v=67"></script><script>
 if('serviceWorker' in navigator){
- navigator.serviceWorker.register('service-worker.js?v=20',{updateViaCache:'none'});
+ navigator.serviceWorker.register('service-worker.js?v=21',{updateViaCache:'none'});
 }
 </script>
 </body>

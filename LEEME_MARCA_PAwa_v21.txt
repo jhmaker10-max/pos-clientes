@@ -1,0 +1,13 @@
+PAWA POS — IDENTIDAD FIJA DE APLICACIÓN
+
+El manifiesto y los iconos para instalar PAWA POS están fijados al nombre PAWA POS y al logo suministrado por el propietario.
+El panel de Administración ya no permite cambiar el icono PWA.
+El nombre y logotipo del negocio siguen siendo editables para el catálogo y los comprobantes.
+
+PUBLICACIÓN
+1. Guarda copia de los archivos actuales y sube todo el contenido de este ZIP a la raíz del repositorio POS Clientes.
+2. Comprueba GitHub Pages. Reabre la PWA en PC/celular.
+3. Si ya estaba instalada con nombre/icono antiguo, puede ser necesario quitar el acceso directo o desinstalar la PWA y volver a instalarla para que el sistema operativo adopte el nuevo icono.
+4. No borres datos del sitio, cachés de almacenamiento o el almacenamiento local: productos/ventas pueden estar guardados allí. Haz respaldo antes de desinstalar, especialmente si los datos están solo en el dispositivo.
+
+La identidad de instalación fija no impide que un usuario técnico modifique código público o sus accesos directos locales: GitHub Pages es un sitio estático.

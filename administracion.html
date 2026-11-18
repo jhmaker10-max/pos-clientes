@@ -7,8 +7,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="estilos.css?v=89">
 <link rel="stylesheet" href="pawa-paneles.css?v=6">
-<title>Administración de tienda</title>
+<title>Administración de tienda | PAWA POS</title>
 <script src="acceso-panel-moderno.js?v=58"></script>
+
+<link rel="manifest" href="manifest.json?v=21">
+<link rel="icon" type="image/png" href="pawa-favicon.png?v=21">
+<link rel="apple-touch-icon" href="pawa-apple-touch-icon.png?v=21">
+<meta name="apple-mobile-web-app-title" content="PAWA POS">
+<meta name="application-name" content="PAWA POS">
+<meta name="theme-color" content="#000000">
 </head>
 <body class="pos-pro-admin" onload="verificarAccesoAdmin(); cargarAdmin()">
 <nav class="pos-admin-sidebar" aria-label="Navegación principal">
@@ -165,10 +172,7 @@
       <label>Logo de la tienda</label>
       <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg">
       <img id="logoVista" class="preview" alt="Vista previa del logo">
-      <label>Icono de la aplicación en el celular (PWA)</label>
-      <input type="file" id="logoPWAInput" accept=".png,.jpg,.jpeg">
-      <img id="logoPWAVista" class="preview" alt="Vista previa del icono de la aplicación">
-      <small>Para el icono del celular se recomienda una imagen cuadrada de 512 × 512 px.</small>
+      <div class="pawa-marca-fija" style="margin-top:14px;padding:14px;border-radius:12px;border:1px solid #d5dbe3;background:#f8fafc;color:#172033;display:flex;align-items:center;gap:12px"><img src="pawa-icon-192.png" alt="Logo oficial PAWA POS" style="width:56px;height:56px;border-radius:12px"><div><strong>PAWA POS · Identidad de la aplicación</strong><div style="font-size:13px;margin-top:4px">Nombre e icono de instalación oficiales, no modificables. El logo de tu tienda de arriba sigue siendo independiente.</div></div></div>
     </section>
     <section class="tarjeta">
       <h2>🎨 Colores de la tienda</h2>
@@ -259,11 +263,11 @@ function cancelarEdicionProducto() {
   const cancelar=document.getElementById('cancelarEdicionBtn'); if(cancelar) cancelar.hidden=true;
 }
 </script>
-<script src="firebase-cloud.js?v=local2"></script>
+<script src="firebase-cloud.js?v=21"></script>
 <script src="seguridad-pos-v25.js?v=69"></script>
 <script src="tema.js?v=67"></script>
 <script src="stock-alertas.js?v=88"></script>
-<script src="app.js?v=92"></script>
+<script src="app.js?v=21"></script>
 <script src="inventario.js?v=56"></script>
 <script src="transparencia-productos.js?v=6"></script>
 <script src="ticket_canvas.js?v=111"></script>

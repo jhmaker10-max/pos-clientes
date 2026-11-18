@@ -25,19 +25,19 @@ const cloudDB={
   delete(ref){writes.push({ref,op:'delete'});readOnly=false}
  };const result=await fn(tx);for(const w of writes){let all=LL_GET(w.ref._c),id=w.ref._id;if(w.op==='delete')delete all[id];else if(w.op==='update')all[id]={...(all[id]||{}),...w.data};else all[id]=w.opt?.merge?{...(all[id]||{}),...w.data}:w.data;LL_SAVE(w.ref._c,all)}return result});LL_QUEUE=job.catch(()=>{});return job}
 };
-function actualizarManifestDesdeFirebase(){const logo=localStorage.getItem('logoPWA');if(!logo)return;const icon=document.getElementById('iconoTiendaApple');if(icon)icon.href=logo}
+function actualizarManifestDesdeFirebase(){ /* PAWA POS usa un icono de instalación fijo. */ }
 async function sincronizarProductoFirebase(p){await cloudDB.collection('productos').doc(String(p.id)).set(p)}
 async function actualizarProductoFirebase(p){await cloudDB.collection('productos').doc(String(p.id)).set(p,{merge:true})}
 async function eliminarProductoFirebase(id){await cloudDB.collection('productos').doc(String(id)).delete()}
 async function sincronizarProductosFirebase(){return true}
-const CONFIG_KEYS=['nombreTienda','contactoTienda','mensajeTienda','mensajeTicket','claveAdmin','colorFondoTienda','colorPrincipalTienda','colorProductoTienda','colorDatosTienda','colorContornoTienda','colorBordesTienda','colorSuaveTienda','colorNombreProductoTienda','logoTienda','logoTiendaURL','logoURL','logoPWA','qrPagoYape','qrPagoPlin'];
+const CONFIG_KEYS=['nombreTienda','contactoTienda','mensajeTienda','mensajeTicket','claveAdmin','colorFondoTienda','colorPrincipalTienda','colorProductoTienda','colorDatosTienda','colorContornoTienda','colorBordesTienda','colorSuaveTienda','colorNombreProductoTienda','logoTienda','logoTiendaURL','logoURL','qrPagoYape','qrPagoPlin'];
 async function sincronizarTiendaFirebase(){const data={};for(const k of CONFIG_KEYS)data[k]=localStorage.getItem(k)||'';await cloudDB.collection('configuracion').doc('tienda').set(data);return true}
 async function cargarTiendaDesdeFirebase(){const d=await cloudDB.collection('configuracion').doc('tienda').get();if(d.exists){for(const [k,v] of Object.entries(d.data()))if(typeof v==='string')localStorage.setItem(k,v);if(typeof aplicarColoresTienda==='function')aplicarColoresTienda()}return true}
 async function sincronizarPedidoFirebase(p){await cloudDB.collection('pedidos').doc(String(p.numero)).set(p)}
 async function cargarPedidosFirebase(){const s=await cloudDB.collection('pedidos').get(),arr=[];s.forEach(d=>arr.push(d.data()));if(arr.length)localStorage.setItem('pedidos',JSON.stringify(arr))}
 async function actualizarEstadoPedidoFirebase(p){await sincronizarPedidoFirebase(p)}
 async function subirLogoFirebase(v){localStorage.setItem('logoTienda',v||'');return v||''}
-async function subirLogoPWAFirebase(file){const url=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});localStorage.setItem('logoPWA',url);actualizarManifestDesdeFirebase();return url}
+async function subirLogoPWAFirebase(){throw Error('El icono oficial de PAWA POS no se puede modificar')}
 let ultimoErrorProductosFirebase=null,productosVigentesFirebase=[],catalogoVerificadoDisponible=true,productosConfirmadosPorServidor=false,cancelarEscuchaProductos=null,promesaPrimeraCargaProductos=null;
 function guardarCatalogoVerificado(p){try{localStorage.setItem('productos',JSON.stringify(p))}catch(_){}}
 function cargarProductosDesdeFirebase(){if(productosConfirmadosPorServidor)return Promise.resolve(true);if(promesaPrimeraCargaProductos)return promesaPrimeraCargaProductos;promesaPrimeraCargaProductos=new Promise(resolve=>{let first=true;try{cancelarEscuchaProductos=cloudDB.collection('productos').onSnapshot({},snap=>{const arr=[];snap.forEach(d=>arr.push({...d.data(),id:d.data()?.id??d.id}));productosVigentesFirebase=arr;productosConfirmadosPorServidor=true;guardarCatalogoVerificado(arr);if(typeof window.catalogoOfflineGuardar==='function')window.catalogoOfflineGuardar(arr);if(typeof cargarProductos==='function')cargarProductos();if(typeof window.renderizarInventario==='function')window.renderizarInventario();if(typeof renderizarInicioCache==='function')renderizarInicioCache();window.dispatchEvent(new Event('pos-catalogo-actualizado'));if(first){first=false;resolve(true)}},e=>{ultimoErrorProductosFirebase=e;if(first){first=false;resolve(false)}})}catch(e){ultimoErrorProductosFirebase=e;resolve(false)}});return promesaPrimeraCargaProductos}
