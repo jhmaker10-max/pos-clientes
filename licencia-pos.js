@@ -39,7 +39,8 @@
  function vencido(message){const {s,p}=wrapper('Tu prueba gratuita terminó',message||'Tus 5 días de prueba han finalizado. Adquiere una licencia para continuar utilizando PAWA POS.');linkBuy(s);
    const code=document.createElement('input');code.placeholder='Introduce tu código de licencia';code.autocomplete='off';code.style.cssText=css+';margin-top:16px';code.value=localStorage.getItem(CODE)||'';
    const send=button('Activar mi licencia',async()=>{if(!code.value.trim()){p.textContent='Introduce tu código';return}localStorage.setItem(CODE,code.value.trim().toUpperCase());loading();await verificar()});
-   const logout=button('Usar otra cuenta',async()=>{const t=localStorage.getItem(TOKEN);localStorage.removeItem(TOKEN);localStorage.removeItem(CACHE);if(t)request('/api/cuenta/salir',{},t).catch(()=>{});accesoCuenta()},'#334155');s.append(code,send,logout);
+   const profile=button('Mi cuenta / Eliminar cuenta',()=>{if(window.PAWAOpenAccount)window.PAWAOpenAccount();else p.textContent='No se pudo abrir Mi cuenta. Recarga la página.'},'#0f766e');
+   const logout=button('Usar otra cuenta',async()=>{const t=localStorage.getItem(TOKEN);localStorage.removeItem(TOKEN);localStorage.removeItem(CACHE);if(t)request('/api/cuenta/salir',{},t).catch(()=>{});accesoCuenta()},'#334155');s.append(code,send,profile,logout);
  }
  async function verificar(){if(busy)return;busy=true;try{
    const token=localStorage.getItem(TOKEN);if(!token){accesoCuenta();return}

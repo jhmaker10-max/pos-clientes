@@ -242,7 +242,7 @@ actualizarIconoTienda();
 if(!confirm("¿Está seguro de guardar los cambios de la tienda?")){
  return;
 }
-if(document.getElementById('claveAdmin')) localStorage.setItem('claveAdmin', claveAdmin.value || '1234');
+// La contraseña de administración se gestiona por separado y de forma segura en Render/Neon.
 
 try{
 
@@ -404,7 +404,7 @@ if(document.getElementById("contactoTienda"))
 contactoTienda.value=localStorage.getItem("contactoTienda")||"";
 
 if(document.getElementById("claveAdmin"))
-claveAdmin.value=localStorage.getItem("claveAdmin")||"1234";
+claveAdmin.value="";
  if(document.getElementById("mensajeTienda"))
  mensajeTienda.value=localStorage.getItem("mensajeTienda")||"";
 
@@ -1188,41 +1188,7 @@ function buscarCodigo(codigo){
 }
 
 
-async function entrarAdmin(){
- if(window.POSAcceso?.entrarAdmin) return window.POSAcceso.entrarAdmin();
- if(typeof cargarTiendaDesdeFirebase==='function'){
-   await cargarTiendaDesdeFirebase();
- }
- let clave=localStorage.getItem("claveAdmin")||"1234";
- let ingreso=prompt("🔐 Ingrese contraseña de administrador:");
- if(ingreso===clave){
-   sessionStorage.setItem("adminOK","1");
-   location="administracion.html";
- }else{
-   alert("Contraseña incorrecta");
- }
-}
-
-async function verificarAccesoAdmin(){
- if(window.POSAcceso?.verificarAccesoAdmin) return window.POSAcceso.verificarAccesoAdmin();
- if(typeof cargarTiendaDesdeFirebase==="function"){
-   await cargarTiendaDesdeFirebase();
- }
-
- let clave=localStorage.getItem("claveAdmin");
- if(!clave){
-   localStorage.setItem("claveAdmin","1234");
-   clave="1234";
- }
- if(sessionStorage.getItem("adminOK")!=="1"){
-   let ingreso=prompt("🔐 Ingrese contraseña de administrador:");
-   if(ingreso!==clave){
-     alert("Acceso denegado");
-     location="inicio.html";
-   }else{
-     sessionStorage.setItem("adminOK","1");
-   }
- }
-}
+async function entrarAdmin(){return window.POSAcceso?.entrarAdmin?.();}
+async function verificarAccesoAdmin(){return window.POSAcceso?.verificarAccesoAdmin?.();}
 
 window.addEventListener('load',()=>{ setTimeout(cargarLogoPWADesdeFirebase,500); });

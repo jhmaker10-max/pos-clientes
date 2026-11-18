@@ -1,11 +1,13 @@
 
-const CACHE_NAME = "pawa-pos-brevo-separado-v10";
+const CACHE_NAME = "pawa-pos-cuenta-admin-v11";
 
 const APP_FILES = [
   "./",
   "inicio.html",
   "config-licencias.js?v=1",
   "licencia-pos.js?v=9",
+  "cuenta-pawa.js?v=1",
+  "clave-admin-pawa.js?v=1",
   "index.html",
   "estilos.css?v=88",
   "stock-alertas.js?v=88",
@@ -30,7 +32,7 @@ const APP_FILES = [
   "transparencia-productos.js?v=6",
   "tema.js?v=67",
   "firebase-cloud.js?v=67",
-  "acceso-panel-moderno.js?v=57",
+  "acceso-panel-moderno.js?v=58",
   "manifest.json",
   "pos-profesional.js?v=67",
   "icon-tienda.png"

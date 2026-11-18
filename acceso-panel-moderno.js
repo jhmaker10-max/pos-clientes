@@ -1,11 +1,9 @@
 (function(){
 'use strict';
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function ensureDefaultKey(){
- let clave=localStorage.getItem('claveAdmin');
- if(!clave){clave='1234';localStorage.setItem('claveAdmin',clave);}
- return clave;
-}
+const API=(window.POS_LICENSE_API_URL||location.origin).replace(/\/$/,'');
+async function apiAdmin(route,payload={}){const token=localStorage.getItem('pawa_cuenta_token_v1');if(!token)throw Error('Primero inicia sesión en PAWA POS');const r=await fetch(API+route,{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok)throw Error(d.error||'Error de autenticación');return d;}
+
 function getConfig(panel){
  return panel==='ventas'
   ? {titulo:'Acceso a ventas', subtitulo:'Consulta reportes, historial y reimpresión de boletas.', icono:'▤', etiqueta:'Contraseña de administrador'}
@@ -15,7 +13,7 @@ function removeExisting(){document.querySelectorAll('.acceso-panel-overlay').for
 function solicitar(panel){
  removeExisting();
  const cfg=getConfig(panel);
- const clave=ensureDefaultKey();
+
  return new Promise(resolve=>{
   const overlay=document.createElement('div');
   overlay.className='acceso-panel-overlay';
@@ -35,8 +33,7 @@ function solicitar(panel){
   const input=overlay.querySelector('#accesoPanelInput');
   const error=overlay.querySelector('.acceso-panel-error');
   const confirmar=()=>{
-   if(input.value===clave){cerrar(true);return;}
-   error.textContent='La contraseña no es correcta. Inténtalo nuevamente.';
+   apiAdmin('/api/admin-tienda/verificar',{password:input.value}).then(()=>cerrar(true)).catch(e=>{error.textContent=e.message;});
    dialog.classList.remove('acceso-panel-sacudir'); void dialog.offsetWidth; dialog.classList.add('acceso-panel-sacudir');
    input.select();
   };
@@ -56,27 +53,31 @@ function solicitar(panel){
   setTimeout(()=>input.focus(),40);
  });
 }
+async function pedirPermiso(panel){
+ try{const state=await apiAdmin('/api/admin-tienda/estado');
+  if(!state.configurada){sessionStorage.setItem('pawa_admin_pendiente_config','1');return true}
+  return await solicitar(panel);
+ }catch(e){alert('No se pudo verificar el acceso de administración: '+e.message);return false}
+}
 async function entrarAdmin(){
  if(typeof cargarTiendaDesdeFirebase==='function'){try{await cargarTiendaDesdeFirebase();}catch(_){}}
- const ok=await solicitar('admin');
+ const ok=await pedirPermiso('admin');
  if(ok){sessionStorage.setItem('adminOK','1');location='administracion.html';}
 }
 async function verificarAccesoAdmin(){
  if(typeof cargarTiendaDesdeFirebase==='function'){try{await cargarTiendaDesdeFirebase();}catch(_){}}
- ensureDefaultKey();
  if(sessionStorage.getItem('adminOK')==='1')return true;
- const ok=await solicitar('admin');
+ const ok=await pedirPermiso('admin');
  if(!ok){location='inicio.html';return false;}
  sessionStorage.setItem('adminOK','1');
  return true;
 }
 async function verificarAccesoVentas(){
- ensureDefaultKey();
  if(sessionStorage.getItem('ventasOK')==='1')return true;
- const ok=await solicitar('ventas');
+ const ok=await pedirPermiso('ventas');
  if(!ok){location='inicio.html';return false;}
  sessionStorage.setItem('ventasOK','1');
  return true;
 }
-window.POSAcceso={solicitar,entrarAdmin,verificarAccesoAdmin,verificarAccesoVentas};
+window.POSAcceso={solicitar,entrarAdmin,verificarAccesoAdmin,verificarAccesoVentas,apiAdmin};
 })();

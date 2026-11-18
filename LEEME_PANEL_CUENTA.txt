@@ -1,0 +1,12 @@
+PAWA POS — Nuevas funciones
+
+El botón Mi cuenta aparece en las pantallas del POS una vez que el usuario inicia sesión.
+Perfil: muestra nombre de tienda, email, verificación, registro, prueba y licencias.
+Cerrar sesión: cierra la sesión en el backend y elimina token de este navegador; no borra ventas/productos.
+Eliminar cuenta: exige contraseña y confirmación. Una cuenta con licencia vinculada no se puede eliminar automáticamente.
+Administración: sin contraseña predeterminada 1234; el primer acceso permite configurar una contraseña desde Administración > Diseño y tienda. Los accesos siguientes solicitan esta contraseña. Se conserva en Neon como hash y se verifica en Render.
+La contraseña de la cuenta es distinta de la de administración de tienda y de la clave del propietario de Render.
+
+Publicar en orden: backend Render y después POS GitHub Pages. No requiere cambios a la página comercial independiente.
+Limitación heredada: los datos de productos/ventas del POS se almacenan localmente y no se aíslan por cuenta en el mismo navegador. No utilices cuentas distintas en el mismo perfil de navegador hasta implantar aislamiento de datos.
+Prevención de pruebas repetidas: el backend conserva un HMAC del correo eliminado. Esto exige una política de retención y privacidad.
