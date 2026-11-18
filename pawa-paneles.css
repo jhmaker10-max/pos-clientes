@@ -52,3 +52,23 @@ body.pawa-cuenta-pagina .pos-pro-bottom-nav{display:none}
 @media(max-width:1099px){body.pawa-cuenta-pagina .pos-pro-nav{display:none}body.pawa-cuenta-pagina .pos-pro-bottom-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))!important} .pawa-account-main{padding:18px 15px 100px}}
 @media(max-width:680px){#pawa-cuenta-panel .pawa-account-body{grid-template-columns:1fr;gap:13px} .pawa-account-page-heading{padding-bottom:16px}#pawa-cuenta-panel>.pawa-account-header{padding:18px 16px}}
 @media print{body.pawa-cuenta-pagina .pos-pro-nav,body.pawa-cuenta-pagina .pos-pro-bottom-nav{display:none!important}}
+
+/* PAWA v14: panel Mi cuenta = shell de Ventas, nunca modal. */
+body.pos-ventas-v24.pawa-cuenta-pagina{background:var(--fondo,#f8fafc);min-height:100vh}
+body.pawa-cuenta-pagina .pawa-account-main{max-width:1450px;width:calc(100% - 48px);margin:0 auto;padding:24px 0 105px;box-sizing:border-box}
+body.pawa-cuenta-pagina #pawa-cuenta-panel{width:100%;margin:0;min-width:0}
+body.pawa-cuenta-pagina #pawa-cuenta-panel>.pawa-account-header{border:1px solid var(--borde-ui,#d8e0e8);border-radius:16px;padding:23px 26px;background:var(--producto-fondo,#fff)}
+body.pawa-cuenta-pagina #pawa-cuenta-panel .pawa-account-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:18px 0 0}
+body.pawa-cuenta-pagina #pawa-cuenta-panel .pawa-account-summary,
+body.pawa-cuenta-pagina #pawa-cuenta-panel .pawa-account-stats,
+body.pawa-cuenta-pagina #pawa-cuenta-panel .pawa-account-warning{grid-column:1/-1}
+body.pawa-cuenta-pagina .ventas-pro-header{display:flex}
+body.pawa-cuenta-pagina .pawa-account-actions button{width:100%;margin:9px 0 0}
+@media(max-width:1099px){
+ body.pos-ventas-v24.pawa-cuenta-pagina .pos-pro-bottom-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ body.pawa-cuenta-pagina .pawa-account-main{width:calc(100% - 26px);padding-top:16px}
+}
+@media(max-width:700px){
+ body.pawa-cuenta-pagina #pawa-cuenta-panel .pawa-account-body{grid-template-columns:1fr;gap:13px}
+ body.pawa-cuenta-pagina #pawa-cuenta-panel>.pawa-account-header{padding:17px 15px}
+}

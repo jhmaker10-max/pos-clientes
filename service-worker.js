@@ -1,13 +1,13 @@
 
-const CACHE_NAME = "pawa-pos-cuenta-fullpage-v13";
+const CACHE_NAME = "pawa-pos-cuenta-sidebar-v14";
 
 const APP_FILES = [
   "./",
   "inicio.html",
   "config-licencias.js?v=1",
-  "licencia-pos.js?v=11",
-  "cuenta-pawa.js?v=4",
-  "pawa-paneles.css?v=4",
+  "licencia-pos.js?v=12",
+  "cuenta-pawa.js?v=6",
+  "pawa-paneles.css?v=6",
   "mi-cuenta.html",
   "clave-admin-pawa.js?v=1",
   "index.html",
@@ -75,7 +75,7 @@ self.addEventListener("fetch", event=>{
   }
 
   // HTML y scripts propios: red primero; evita ejecutar versiones viejas.
-  if(url.origin === self.location.origin && (url.pathname.endsWith(".js") || url.pathname.endsWith(".html"))){
+  if(url.origin === self.location.origin && (url.pathname.endsWith(".js") || url.pathname.endsWith(".html") || url.pathname.endsWith(".css"))){
     event.respondWith(fetch(request).then(response=>{
       if(response.ok){const copy=response.clone();caches.open(CACHE_NAME).then(c=>c.put(request,copy));}
       return response;

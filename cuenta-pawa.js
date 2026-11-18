@@ -3,7 +3,7 @@
 'use strict';
 const TOKEN='pawa_cuenta_token_v1',CODE='pos_licencia_codigo',CACHE='pawa_estado_v1';
 const API=(window.POS_LICENSE_API_URL||location.origin).replace(/\/$/,'');
-const style=document.createElement('link');style.rel='stylesheet';style.href='pawa-paneles.css?v=4';document.head.append(style);
+const style=document.createElement('link');style.rel='stylesheet';style.href='pawa-paneles.css?v=6';document.head.append(style);
 const token=()=>localStorage.getItem(TOKEN);
 async function api(route,data={}){const r=await fetch(API+route,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token()},body:JSON.stringify(data)});const d=await r.json();if(!r.ok)throw Error(d.error||'Error del servidor');return d}
 function el(tag,text,cls){const x=document.createElement(tag);if(text!=null)x.textContent=text;if(cls)x.className=cls;return x}
@@ -50,18 +50,6 @@ function deleting(){const box=modal('Eliminar cuenta');const warning=el('section
 window.PAWAOpenAccount=()=>{location.href='mi-cuenta.html'};
 document.addEventListener('DOMContentLoaded',()=>{
  if(document.body.classList.contains('pawa-cuenta-pagina'))open();
- const makeLink=(container,kind)=>{
-  if(!container||container.querySelector('.pawa-cuenta-nav'))return;
-  const a=document.createElement('a');a.href='mi-cuenta.html';a.className='pawa-cuenta-nav';a.setAttribute('aria-label','Abrir Mi cuenta');
-  if(kind==='mobile')a.innerHTML='<span class="pawa-cuenta-icono" aria-hidden="true">♙</span><span>Mi cuenta</span>';
-  else a.innerHTML='<span aria-hidden="true">♙</span> <span>Mi cuenta</span>';
-  
-  const admin=container.querySelector('a[href="administracion.html"]');
-  if(admin)admin.after(a);else container.append(a);
- };
- document.querySelectorAll('.pos-pro-nav,.scan-pro-sidebar,.ventas-pro-sidebar,.pedido-pro-sidebar').forEach(nav=>makeLink(nav,'desktop'));
- document.querySelectorAll('.pos-pro-bottom-nav').forEach(nav=>makeLink(nav,'mobile'));
- const adminNav=document.querySelector('.pos-admin-sidebar');
- if(adminNav){const a=document.createElement('a');a.href='mi-cuenta.html';a.className='pawa-cuenta-nav pawa-cuenta-admin-link';a.innerHTML='<span aria-hidden="true">♙</span> Mi cuenta';const back=adminNav.querySelector('.pos-admin-sidebar-inicio');if(back)back.before(a);else adminNav.append(a)}
+
 });
 })();

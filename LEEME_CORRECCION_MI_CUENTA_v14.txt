@@ -1,0 +1,15 @@
+PAWA POS — MI CUENTA 100% PÁGINA COMPLETA — v14
+
+1. Sube el CONTENIDO de la carpeta pos-clientes-main a la RAÍZ de tu repositorio GitHub Pages (no subas la carpeta como subcarpeta).
+2. Reemplaza los archivos existentes y confirma que mi-cuenta.html aparezca junto a inicio.html.
+3. Visita directamente TU-DOMINIO/mi-cuenta.html para comprobar que se ve con el menú lateral de Ventas en PC y 5 botones en el móvil.
+4. Si sigue la versión vieja, abre la página con ?v=14, recarga con Ctrl+F5 y en Chrome > F12 > Application > Service Workers > Unregister SOLO si es necesario. No borres almacenamiento del sitio: allí hay productos y ventas.
+5. No se requiere actualizar Render.
+
+CORREGIDO:
+- Mi cuenta es una página completa con el mismo encabezado y sidebar de Ventas.
+- Enlaces de navegación integrados directamente en HTML, sin depender de inyección JavaScript.
+- Menú móvil con quinto acceso fijo en todas las páginas con barra inferior.
+- Eliminada la inyección duplicada de enlaces desde cuenta-pawa.js.
+- Incremento de versión para evitar caché de scripts y CSS.
+- Se mantienen los módulos originales de ventas, escáner, impresión e inventario.

@@ -2,11 +2,11 @@
 <html>
 <head>
 <script src="config-licencias.js?v=1"></script>
-<script src="licencia-pos.js?v=11"></script>
-<script src="cuenta-pawa.js?v=4"></script>
+<script src="licencia-pos.js?v=12"></script>
+<script src="cuenta-pawa.js?v=6"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="estilos.css?v=89">
-<link rel="stylesheet" href="pawa-paneles.css?v=4">
+<link rel="stylesheet" href="pawa-paneles.css?v=6">
 <title>Administración de tienda</title>
 <script src="acceso-panel-moderno.js?v=58"></script>
 </head>
@@ -20,6 +20,7 @@
     <button type="button" data-admin-destino="panelTienda" onclick="mostrarApartadoAdmin('panelTienda')">🎨 <span>Diseño y tienda</span></button>
     <button type="button" data-admin-destino="panelRespaldo" onclick="mostrarApartadoAdmin('panelRespaldo')">💾<span>Respaldo</span></button>
   </div>
+  <a class="pawa-cuenta-admin-link" href="mi-cuenta.html">♙ Mi cuenta</a>
   <a class="pos-admin-sidebar-inicio" href="inicio.html">← Volver a la tienda</a>
 </nav>
 <header class="pos-admin-header"><div class="pos-admin-header-inner"><div><small class="pos-admin-header-eyebrow">CENTRO DE CONTROL</small><h1>Administración</h1><p>Gestiona tu tienda desde un solo lugar</p></div><a class="pos-admin-regresar" href="inicio.html">⌂ <span>Ir a la tienda</span></a></div></header>
@@ -274,6 +275,7 @@ function cancelarEdicionProducto() {
   <a href="scanner.html"><span class="icono-escaner">[ ||| ]</span><span>Escáner</span></a>
   <a href="control_pedidos.html"><span class="icono-ventas">🧾</span><span>Ventas</span></a>
   <a class="activo" href="administracion.html" aria-current="page">⚙<span>Admin</span></a>
+  <a class="pawa-cuenta-nav" href="mi-cuenta.html">♙<span>Mi cuenta</span></a>
 </nav><script src="clave-admin-pawa.js?v=2"></script>
 </body>
 </html>
