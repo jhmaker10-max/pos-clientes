@@ -30,7 +30,7 @@
    s.append(tienda,correo,pass,submit,toggle);linkBuy(s);
  }
  function verificacionCorreo(correo,password,message){
-   const {s,p}=wrapper('📧 Verifica tu correo',message||`Pulsa <Enviar código> para recibirlo en ${correo}. Tu prueba comienza al verificarlo.`);
+   const {s,p}=wrapper('📧 Verifica tu correo',message||`Pulsa «Enviar código» para recibirlo en ${correo}. Tu prueba comienza al verificarlo.`);
    const intro=document.createElement('div');
    intro.style.cssText='margin:14px 0 6px;padding:14px;border:1px solid #334155;border-radius:12px;background:#0f172a';
    intro.innerHTML=`<div style="font-weight:800;font-size:15px;margin-bottom:6px">✨ Verificación de cuenta</div><div style="color:#cbd5e1;line-height:1.55;font-size:14px">Introduce el código de 6 dígitos enviado a tu correo para activar tu acceso y comenzar tus <strong style="color:#fff">5 días gratis</strong>.</div>`;
