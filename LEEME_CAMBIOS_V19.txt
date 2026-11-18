@@ -1,0 +1,9 @@
+PAWA POS V19 — Solución desplazamiento + actualización celular
+
+1. Sube todos los archivos directamente a la raíz del repositorio pos-clientes y confirma el commit.
+2. El formulario de registro/login ahora permite desplazamiento vertical en PC y celular, incluso con pantallas bajas.
+3. Las páginas ahora cargan licencia-pos.js?v=19 y registran service-worker.js?v=19. La caché de archivos de la aplicación cambia a v19.
+4. No se borran productos, ventas ni datos del navegador: no uses Borrar almacenamiento / Clear site data.
+5. En celular: cierra todas las pestañas del POS, abre nuevamente la URL de GitHub Pages y actualiza. Si está instalada como app, ciérrala completamente y ábrela de nuevo.
+6. Para comprobar la publicación, abre https://TU-POS/ lic​encia-pos.js?v=19 (sin espacios) y busca overflow-y:auto.
+7. No se modificó el servidor Render.

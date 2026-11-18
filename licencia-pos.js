@@ -7,8 +7,8 @@
  const wa=()=>`https://wa.me/${PHONE}?text=${encodeURIComponent('Hola, deseo adquirir una licencia para PAWA POS.')}`;
  let busy=false;
  const css='font:inherit;box-sizing:border-box;width:100%;padding:12px;border-radius:9px;border:1px solid #64748b;background:#fff;color:#111827';
- function layer(){let el=document.getElementById('licenciaBloqueo');if(!el){el=document.createElement('div');el.id='licenciaBloqueo';el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#0b1220;color:#eaf3ff;display:grid;place-items:center;padding:16px;font:16px system-ui';document.body.append(el)}el.replaceChildren();return el}
- function wrapper(title,message){const l=layer(),s=document.createElement('section');s.style.cssText='background:#162338;border:1px solid #334155;border-radius:18px;max-width:450px;width:100%;padding:26px;box-shadow:0 25px 60px #0006';const h=document.createElement('h2');h.textContent=title;h.style.margin='0 0 10px';const p=document.createElement('p');p.textContent=message;p.style.cssText='color:#cbd5e1;line-height:1.55';s.append(h,p);l.append(s);return {s,p}}
+ function layer(){let el=document.getElementById('licenciaBloqueo');if(!el){el=document.createElement('div');el.id='licenciaBloqueo';el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#0b1220;color:#eaf3ff;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:16px max(12px,env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));box-sizing:border-box;font:16px system-ui';document.body.append(el)}el.replaceChildren();return el}
+ function wrapper(title,message){const l=layer(),s=document.createElement('section');s.style.cssText='background:#162338;border:1px solid #334155;border-radius:18px;max-width:450px;width:100%;margin:auto 0;flex:none;box-sizing:border-box;padding:clamp(16px,4vw,26px);box-shadow:0 25px 60px #0006';const h=document.createElement('h2');h.textContent=title;h.style.margin='0 0 10px';const p=document.createElement('p');p.textContent=message;p.style.cssText='color:#cbd5e1;line-height:1.55';s.append(h,p);l.append(s);return {s,p}}
  function button(text,onClick,background='#06b6d4'){const b=document.createElement('button');b.textContent=text;b.style.cssText=`font:inherit;display:block;margin-top:12px;width:100%;padding:13px;border:0;border-radius:9px;background:${background};color:white;cursor:pointer;font-weight:700`;b.onclick=onClick;return b}
  function linkBuy(s){
    const panel=document.createElement('div');panel.style.cssText='margin-top:20px;padding:16px;background:linear-gradient(145deg,#102d2a,#102639);border:1px solid #2c695c;border-radius:14px';
@@ -21,7 +21,7 @@
  }
  function loading(){wrapper('PAWA POS','Comprobando tu acceso…')}
  async function request(route,payload,token){const response=await fetch(API+route,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(payload||{})});let data;try{data=await response.json()}catch(_){throw Error('Respuesta inesperada del servidor')};if(!response.ok)throw Error(data.error||'No se pudo completar la solicitud');return data}
- function accesoCuenta(message='Regístrate para recibir un código de verificación y comenzar tus 5 días gratuitos.'){
+ function accesoCuenta(message=''){
    const {s,p}=wrapper('🏪 Bienvenido a PAWA POS',message);let registro=true;
    const header=document.createElement('div');header.style.cssText='margin:14px 0;padding:15px;background:#0f172a;border:1px solid #334155;border-radius:13px';
    const subtitle=document.createElement('div');subtitle.textContent='✨ Crea tu espacio de trabajo';subtitle.style.cssText='font-size:15px;font-weight:800;color:#f8fafc;margin-bottom:6px';
